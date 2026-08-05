@@ -1,0 +1,330 @@
+---
+title: Astro Brand Starter — visual operating guide
+description: An interactive map of the starter's design, architecture, features, extension points, and daily workflow.
+---
+
+# Astro Brand Starter
+
+This is the control room for a reusable, bilingual Astro website. The starter is deliberately small: one homepage, two locales, static output, first-class images, strong discovery metadata, and documented extension seams.
+
+<Callout id="guide-purpose" tone="info">
+  Use the Design canvas to inspect responsive intent, the Prototype to switch between English and Swedish, and this guide to understand what to change, what not to couple, and how the system reaches production.
+</Callout>
+
+## What is already built
+
+<Table
+  id="feature-overview"
+  density="relaxed"
+  columns={["Area", "Included now", "Why it matters"]}
+  rows={[
+    ["Foundation", "Astro 7, TypeScript, static output, pnpm", "Small runtime surface and portable hosting"],
+    ["Locales", "English and Swedish routes, browser detection, manual selector", "Good first visit without trapping the visitor"],
+    ["Images", "Astro image pipeline, responsive widths, modern formats, explicit sizing", "Fast media without layout shift"],
+    ["Discovery", "Canonical, hreflang, Open Graph, Twitter cards, JSON-LD, sitemap, robots, llms.txt", "Search engines and answer engines receive consistent facts"],
+    ["Design", "Semantic components plus centralized tokens", "Brand identity can change without rewriting structure"],
+    ["Delivery", "Cloudflare-compatible static build and GitHub Pages workflow", "The same output can move between hosts"],
+    ["AI context", "AGENTS.md, CLAUDE.md, architecture and decision records", "Codex, Claude, and generic agents share the same rules"]
+  ]}
+/>
+
+## System architecture
+
+<Diagram
+  id="architecture-map"
+  data={{
+    html: "<div class='architecture-map'><section><h3>Control inputs</h3><div class='nodes four'><div><strong>site.ts</strong><span>identity · URLs · contacts</span></div><div><strong>translations.ts</strong><span>EN / SV content</span></div><div><strong>tokens.css</strong><span>type · color · space</span></div><div><strong>assets/</strong><span>local source images</span></div></div></section><div class='direction'>↓ one typed content and design contract</div><section><h3>Composition layer</h3><div class='nodes four'><div><strong>BaseLayout</strong><span>document shell</span></div><div><strong>SeoHead</strong><span>metadata + JSON-LD</span></div><div><strong>HomePage</strong><span>semantic sections</span></div><div><strong>ResponsiveImage</strong><span>optimized delivery</span></div></div></section><div class='direction'>↓ Astro builds deterministic static files</div><section class='outputs'><div><h3>Public routes</h3><p>/ · /en/ · /sv/</p><p>sitemap · robots · llms</p></div><div><h3>Deployment targets</h3><p>GitHub Pages</p><p>Cloudflare Pages</p></div></section></div>",
+    css: ".architecture-map{display:grid;gap:14px;color:var(--wf-ink)}.architecture-map section{padding:20px;border:1px solid var(--wf-line);background:var(--wf-paper)}.architecture-map h3{margin:0 0 14px;font-size:15px}.nodes{display:grid;gap:10px}.nodes.four{grid-template-columns:repeat(4,minmax(0,1fr))}.nodes>div,.outputs>div{display:flex;flex-direction:column;gap:6px;padding:15px;border:1px solid var(--wf-line);background:var(--wf-surface)}.nodes span,.outputs p{margin:0;color:var(--wf-muted);font-size:12px}.direction{text-align:center;color:var(--wf-accent);font-size:12px;font-weight:700}.outputs{display:grid!important;grid-template-columns:2fr 1fr;gap:10px;background:transparent!important;border:0!important;padding:0!important}@media(max-width:760px){.nodes.four{grid-template-columns:1fr 1fr}.outputs{grid-template-columns:1fr!important}}",
+    caption: "The project separates brand inputs, page composition, generated routes, and hosting. That separation is the main portability mechanism.",
+    frame: "show",
+    renderMode: "design"
+  }}
+/>
+
+The redirect at the root route reads the browser language on the client. Swedish visitors enter at `/sv/`; everyone else enters at `/en/`. Every localized page still exposes a visible selector, canonical URL, and reciprocal hreflang links. English remains the deterministic fallback.
+
+## Your control center
+
+<Table
+  id="control-center"
+  density="relaxed"
+  columns={["You want to change…", "Primary file", "What updates"]}
+  rows={[
+    ["Business name, domain, email, social profiles", "src/config/site.ts", "Metadata, structured data, footer and contact links"],
+    ["English or Swedish copy", "src/i18n/translations.ts", "Headings, labels, calls to action and page metadata"],
+    ["Colors, type scale, spacing and radii", "src/styles/tokens.css", "The visual language across every component"],
+    ["Homepage composition", "src/components/HomePage.astro", "Section order and semantic content structure"],
+    ["Image behavior", "src/components/ResponsiveImage.astro", "Widths, formats, quality, loading and decoding defaults"],
+    ["Canonical host or repository subpath", "Environment variables", "Absolute URLs and generated asset paths"],
+    ["Supported locales", "src/i18n/config.ts plus translations", "Routes, alternates, labels and detection"],
+    ["GitHub deployment", ".github/workflows/pages.yml", "Build environment and Pages artifact publishing"]
+  ]}
+/>
+
+<Callout id="control-rule" tone="success">
+  Most new brands should begin by editing three places only: site.ts for facts, translations.ts for voice, and tokens.css for visual identity. Structural components should change only when the information architecture changes.
+</Callout>
+
+## Repository map
+
+<FileTree
+  id="repository-map"
+  title="astro-brand-starter"
+  entries={[
+    { path: "src/config/site.ts", type: "file", note: "Single source of business facts" },
+    { path: "src/i18n/config.ts", type: "file", note: "Locale contract and helpers" },
+    { path: "src/i18n/translations.ts", type: "file", note: "Typed EN/SV page content" },
+    { path: "src/components/HomePage.astro", type: "file", note: "Homepage composition" },
+    { path: "src/components/SeoHead.astro", type: "file", note: "Metadata and structured data" },
+    { path: "src/components/ResponsiveImage.astro", type: "file", note: "Image abstraction" },
+    { path: "src/layouts/BaseLayout.astro", type: "file", note: "Semantic document shell" },
+    { path: "src/pages/index.astro", type: "file", note: "Language-aware entry route" },
+    { path: "src/pages/en/index.astro", type: "file", note: "English route" },
+    { path: "src/pages/sv/index.astro", type: "file", note: "Swedish route" },
+    { path: "src/pages/robots.txt.ts", type: "file", note: "Crawler policy" },
+    { path: "src/pages/llms.txt.ts", type: "file", note: "AI-readable site summary" },
+    { path: "src/styles/tokens.css", type: "file", note: "Brand design decisions" },
+    { path: "src/styles/global.css", type: "file", note: "Shared layout and accessibility rules" },
+    { path: "public/.well-known/ai-plugin.json", type: "file", note: "Optional machine-readable identity" },
+    { path: ".github/workflows/pages.yml", type: "file", note: "GitHub Pages pipeline" },
+    { path: "docs/architecture.md", type: "file", note: "System explanation" },
+    { path: "docs/decisions/", type: "folder", note: "Why durable choices were made" },
+    { path: "AGENTS.md", type: "file", note: "Cross-agent operating contract" },
+    { path: "CLAUDE.md", type: "file", note: "Claude entry point to shared rules" }
+  ]}
+/>
+
+## The four highest-leverage files
+
+<TabsBlock
+  id="control-files"
+  orientation="vertical"
+  tabs={[
+    {
+      id: "site-config",
+      label: "Brand facts",
+      blocks: [{
+        id: "site-config-code",
+        type: "annotated-code",
+        data: {
+          language: "ts",
+          filename: "src/config/site.ts",
+          code: "export const siteConfig = {\n  name: 'Your Brand',\n  description: 'A clear statement of what you do.',\n  email: 'hello@example.com',\n  defaultLocale: 'en',\n  locales: ['en', 'sv'],\n  social: {}\n} as const;",
+          annotations: [
+            { lines: "2", label: "Identity", note: "Used wherever the organization name must remain consistent." },
+            { lines: "3", label: "Positioning", note: "Fallback description for metadata and machine-readable summaries." },
+            { lines: "4", label: "Contact", note: "Change once; the public contact path follows." },
+            { lines: "5", label: "Fallback", note: "English is the safe default when detection is inconclusive." }
+          ]
+        }
+      }]
+    },
+    {
+      id: "translations",
+      label: "Localized voice",
+      blocks: [{
+        id: "translations-code",
+        type: "annotated-code",
+        data: {
+          language: "ts",
+          filename: "src/i18n/translations.ts",
+          code: "export const translations = {\n  en: {\n    meta: { title: 'Your Brand', description: '...' },\n    hero: { eyebrow: 'Independent by design', title: 'Build trust.' }\n  },\n  sv: {\n    meta: { title: 'Ditt varumärke', description: '...' },\n    hero: { eyebrow: 'Oberoende i grunden', title: 'Bygg förtroende.' }\n  }\n} satisfies Record<Locale, Messages>;",
+          annotations: [
+            { lines: "3", label: "Search language", note: "Each locale owns its title and description instead of translating at runtime." },
+            { lines: "4", label: "Visible message", note: "Page content and metadata share one typed locale object." },
+            { lines: "10", label: "Type boundary", note: "Missing Swedish keys fail during development rather than in production." }
+          ]
+        }
+      }]
+    },
+    {
+      id: "tokens",
+      label: "Visual identity",
+      blocks: [{
+        id: "tokens-code",
+        type: "annotated-code",
+        data: {
+          language: "css",
+          filename: "src/styles/tokens.css",
+          code: ":root {\n  --color-ink: #111111;\n  --color-paper: #f5f3ee;\n  --color-accent: #e3562a;\n  --font-sans: system-ui, sans-serif;\n  --space-page: clamp(1rem, 4vw, 4rem);\n  --radius-control: 999px;\n}",
+          annotations: [
+            { lines: "2", label: "Contrast anchor", note: "Primary text and inverted surfaces derive from this value." },
+            { lines: "4", label: "Brand signal", note: "A single accent gives the minimal system a recognizable point of view." },
+            { lines: "5", label: "Typography seam", note: "Swap the family here after adding and preloading a local font." },
+            { lines: "6", label: "Responsive rhythm", note: "Fluid spacing scales without a pile of breakpoints." }
+          ]
+        }
+      }]
+    },
+    {
+      id: "deployment-config",
+      label: "Hosting paths",
+      blocks: [{
+        id: "deployment-code",
+        type: "annotated-code",
+        data: {
+          language: "js",
+          filename: "astro.config.mjs",
+          code: "const site = process.env.SITE_URL ?? 'https://example.com';\nconst base = process.env.BASE_PATH ?? '/';\n\nexport default defineConfig({\n  site,\n  base,\n  output: 'static',\n  integrations: [sitemap()]\n});",
+          annotations: [
+            { lines: "1", label: "Canonical origin", note: "Set this to the public production domain." },
+            { lines: "2", label: "Repository path", note: "Use /repository-name/ on GitHub project Pages; / on a custom domain." },
+            { lines: "7", label: "Portable output", note: "No server runtime is required by either host." },
+            { lines: "8", label: "Discovery", note: "Astro derives sitemap entries from generated routes." }
+          ]
+        }
+      }]
+    }
+  ]}
+/>
+
+## Image system
+
+Images are local source assets, not opaque files dropped into public. Importing through Astro gives the build pipeline enough information to generate responsive variants, preserve intrinsic dimensions, and avoid cumulative layout shift.
+
+<Diagram
+  id="image-pipeline"
+  data={{
+    html: "<div class='image-map'><section><h3>1 · Source</h3><div><strong>src/assets/images</strong><span>Original, high-quality local file</span></div></section><section><h3>2 · Component contract</h3><div class='split'><div><strong>Required</strong><span>src · alt · width intent</span></div><div><strong>Policy</strong><span>decorative alt allowed only intentionally</span></div></div></section><section><h3>3 · Astro build</h3><div class='split'><div><strong>Transform</strong><span>AVIF / WebP / fallback</span></div><div><strong>Generate</strong><span>srcset · dimensions · hashed URLs</span></div></div></section><section><h3>4 · Browser choice</h3><div><strong>Smallest suitable candidate</strong><span>Based on viewport, density, format support and sizes</span></div></section></div>",
+    css: ".image-map{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;color:var(--wf-ink)}.image-map section{padding:18px;border:1px solid var(--wf-line);background:var(--wf-paper)}.image-map h3{margin:0 0 12px;color:var(--wf-accent);font-size:12px}.image-map section>div,.image-map .split>div{display:flex;flex-direction:column;gap:6px;padding:14px;background:var(--wf-surface);border:1px solid var(--wf-line)}.image-map .split{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0;border:0;background:transparent}.image-map span{color:var(--wf-muted);font-size:12px}@media(max-width:720px){.image-map{grid-template-columns:1fr}}",
+    caption: "The abstraction keeps image policy consistent while still allowing every placement to declare its real display width.",
+    frame: "show",
+    renderMode: "design"
+  }}
+/>
+
+<Checklist
+  id="image-checklist"
+  items={[
+    { id: "img-local", label: "Keep originals in src/assets/images", checked: true, note: "Enables build-time metadata and transforms." },
+    { id: "img-alt", label: "Write alt text for the image's purpose", checked: true, note: "Use an empty alt only when the image is genuinely decorative." },
+    { id: "img-size", label: "Declare realistic sizes for each layout", checked: true, note: "This is what lets the browser choose efficiently." },
+    { id: "img-priority", label: "Reserve eager loading for the true LCP image", checked: true, note: "Everything below the fold remains lazy." },
+    { id: "img-social", label: "Add a dedicated 1200 × 630 social image", checked: false, note: "Brand asset still needed before launch." },
+    { id: "img-logo", label: "Replace the text mark with a logo only if the brand has one", checked: false, note: "Text remains the accessible fallback." }
+  ]}
+/>
+
+## SEO, AEO, and crawler surface
+
+<Table
+  id="discovery-surface"
+  columns={["Surface", "Current behavior", "Owner"]}
+  rows={[
+    ["Canonical URL", "One absolute canonical per localized page", "SeoHead.astro + SITE_URL"],
+    ["Language alternates", "en, sv, and x-default reciprocal links", "SeoHead.astro"],
+    ["Structured data", "Organization and WebSite JSON-LD using the same configured facts", "SeoHead.astro + site.ts"],
+    ["Social previews", "Open Graph and Twitter metadata are emitted", "SeoHead.astro"],
+    ["Crawling", "Public crawling is allowed and sitemap is declared", "robots.txt.ts"],
+    ["AI context", "Plain-language site summary and canonical routes", "llms.txt.ts"],
+    ["Content semantics", "One H1, meaningful sections, real links, localized html lang", "HomePage + BaseLayout"],
+    ["Performance", "Static HTML, minimal JavaScript, optimized images", "Astro build"]
+  ]}
+/>
+
+<Callout id="seo-reality" tone="warning">
+  Metadata cannot create authority on its own. Before launch, replace every placeholder fact, publish a real logo and social image, use a verified domain, and make the homepage answer who the business serves, what it offers, and why it is credible.
+</Callout>
+
+## Deployment model
+
+<Diagram
+  id="deployment-flow"
+  data={{
+    html: "<div class='deploy-map'><div class='source'><strong>GitHub repository</strong><span>main branch · reviewed source</span></div><div class='branches'><section><h3>GitHub Pages</h3><p>Push → Actions validates → Astro builds → Pages publishes dist</p><small>Set SITE_URL and BASE_PATH for project Pages.</small></section><section><h3>Cloudflare Pages</h3><p>Connect repo → install → Astro builds → edge CDN serves dist</p><small>Usually BASE_PATH=/ with a custom domain.</small></section></div><div class='public'><strong>One static artifact contract</strong><span>No host-specific application runtime</span></div></div>",
+    css: ".deploy-map{display:grid;gap:14px;color:var(--wf-ink)}.deploy-map .source,.deploy-map .public{display:flex;justify-content:space-between;gap:20px;padding:18px;border:1px solid var(--wf-line);background:var(--wf-surface)}.deploy-map span,.deploy-map small{color:var(--wf-muted)}.branches{display:grid;grid-template-columns:1fr 1fr;gap:14px}.branches section{padding:20px;border:1px solid var(--wf-line);background:var(--wf-paper)}.branches h3{margin:0 0 12px}.branches p{line-height:1.5}.branches small{display:block;padding-top:10px;border-top:1px solid var(--wf-line)}@media(max-width:720px){.branches{grid-template-columns:1fr}}",
+    caption: "GitHub is the source of truth. Hosting remains replaceable because both targets consume the same static output.",
+    frame: "show",
+    renderMode: "design"
+  }}
+/>
+
+## Day-to-day workflow
+
+<Checklist
+  id="working-rhythm"
+  items={[
+    { id: "work-node", label: "Activate the Node version in .nvmrc", checked: true, note: "nvm use" },
+    { id: "work-install", label: "Install the locked dependency graph", checked: true, note: "pnpm install --frozen-lockfile" },
+    { id: "work-dev", label: "Run the local development server", checked: true, note: "pnpm dev" },
+    { id: "work-edit", label: "Edit facts, localized copy, or tokens before changing structure", checked: true, note: "The three-file control center keeps changes predictable." },
+    { id: "work-validate", label: "Run the complete quality gate", checked: true, note: "pnpm validate" },
+    { id: "work-review", label: "Check both /en/ and /sv/ at mobile and desktop widths", checked: true, note: "Language and responsive parity are part of done." },
+    { id: "work-commit", label: "Commit a focused change and push to GitHub", checked: false, note: "The repository is initialized locally but has no remote or first commit yet." }
+  ]}
+/>
+
+<Table
+  id="command-reference"
+  density="compact"
+  columns={["Command", "Use it for"]}
+  rows={[
+    ["pnpm dev", "Local development with hot reload"],
+    ["pnpm build", "Production static build"],
+    ["pnpm preview", "Inspect the production output locally"],
+    ["pnpm check", "Astro and TypeScript diagnostics"],
+    ["pnpm lint", "Code quality rules"],
+    ["pnpm format:check", "Formatting verification"],
+    ["pnpm validate", "The full pre-push quality gate"]
+  ]}
+/>
+
+## Extension rules
+
+<Callout id="extension-rule" tone="info">
+  Add a new page when it has a distinct search intent or user task. Add a new component when a pattern repeats or owns behavior. Add a dependency only when native Astro and browser capabilities would make the implementation less clear or less reliable.
+</Callout>
+
+<Table
+  id="extension-guide"
+  columns={["Future need", "Preferred extension seam", "Keep invariant"]}
+  rows={[
+    ["A second content page", "Create mirrored en/sv routes and reuse BaseLayout", "Canonical and hreflang parity"],
+    ["A third language", "Extend locale config, translations, routes and selector", "English fallback remains explicit"],
+    ["CMS content", "Adapt data at the boundary into the existing typed content shape", "Components do not depend on a vendor schema"],
+    ["Analytics", "Add one consent-aware integration in BaseLayout", "No blocking script on the critical path"],
+    ["Forms", "Use a host function or external endpoint behind a small form component", "Static pages remain deployable everywhere"],
+    ["Theme overhaul", "Replace token values, then selectively adjust composition", "Semantic markup and accessibility survive the redesign"]
+  ]}
+/>
+
+## Launch decisions still under your control
+
+The starter is technically usable now. These choices are intentionally left open because they belong to the first real brand, not the reusable foundation.
+
+<QuestionForm
+  id="launch-decisions"
+  submitLabel="Save launch direction"
+  questions={[
+    {
+      id: "first-host",
+      mode: "single",
+      title: "Which host should the first real project use?",
+      subtitle: "GitHub Pages is already wired; Cloudflare Pages is preferable when you want previews, edge controls, or a Cloudflare-managed custom domain.",
+      required: true,
+      options: [
+        { id: "github", label: "GitHub Pages first", recommended: true },
+        { id: "cloudflare", label: "Cloudflare Pages first" }
+      ]
+    },
+    {
+      id: "brand-assets",
+      mode: "multi",
+      title: "Which brand assets will be ready for the first launch?",
+      subtitle: "The system works without them, but the social image has the highest discovery impact.",
+      options: [
+        { id: "logo", label: "Logo" },
+        { id: "social", label: "1200 × 630 social image", recommended: true },
+        { id: "hero", label: "Homepage hero image" },
+        { id: "font", label: "Local brand font" }
+      ]
+    },
+    {
+      id: "first-project",
+      mode: "freeform",
+      title: "What is the first business or product this starter should become?",
+      subtitle: "A name, audience, offer, and desired call to action are enough to replace the generic content confidently.",
+      placeholder: "Name · audience · offer · primary action"
+    }
+  ]}
+/>

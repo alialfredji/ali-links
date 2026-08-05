@@ -1,0 +1,78 @@
+---
+import { Picture } from 'astro:assets';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  sizes: string;
+  widths?: number[];
+  caption?: string;
+  credit?: string;
+  priority?: boolean;
+  decorative?: boolean;
+  class?: string;
+}
+
+const {
+  src,
+  alt,
+  sizes,
+  widths = [480, 768, 1024, 1440],
+  caption,
+  credit,
+  priority = false,
+  decorative = false,
+  class: className,
+} = Astro.props;
+
+if (decorative && alt !== '')
+  throw new Error('Decorative images must use an empty alt value.');
+if (!decorative && alt.trim() === '')
+  throw new Error('Informative images require descriptive alt text.');
+---
+
+<figure class:list={['responsive-image', className]}>
+  <Picture
+    src={src}
+    alt={alt}
+    widths={widths}
+    sizes={sizes}
+    formats={['avif', 'webp']}
+    loading={priority ? 'eager' : 'lazy'}
+    decoding="async"
+    fetchpriority={priority ? 'high' : 'auto'}
+  />
+  {
+    (caption || credit) && (
+      <figcaption>
+        {caption && <span>{caption}</span>}
+        {credit && <small>{credit}</small>}
+      </figcaption>
+    )
+  }
+</figure>
+
+<style>
+  .responsive-image {
+    margin: 0;
+  }
+
+  .responsive-image :global(picture),
+  .responsive-image :global(img) {
+    display: block;
+    inline-size: 100%;
+  }
+
+  .responsive-image :global(img) {
+    block-size: auto;
+  }
+
+  figcaption {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-block-start: var(--space-2);
+    color: var(--color-text-muted);
+    font: var(--text-caption);
+  }
+</style>

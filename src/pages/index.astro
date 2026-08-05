@@ -1,0 +1,73 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { localePath, withBase } from '../lib/i18n';
+
+const enPath = localePath('en', '/', import.meta.env.BASE_URL);
+const svPath = localePath('sv', '/', import.meta.env.BASE_URL);
+const canonicalPath = withBase('/', import.meta.env.BASE_URL);
+---
+
+<BaseLayout
+  locale="en"
+  title="Choose language — Your Brand"
+  description="Choose English or Swedish to continue."
+  {canonicalPath}
+>
+  <main
+    id="main"
+    class="language-gateway"
+    data-en-path={enPath}
+    data-sv-path={svPath}
+  >
+    <div class="stack">
+      <p class="eyebrow">Your Brand</p>
+      <h1>Choose language</h1>
+      <p>Your browser language will be used when available.</p>
+      <div class="cluster">
+        <a class="button" href={enPath} data-language="en">English</a>
+        <a class="button button--light" href={svPath} data-language="sv"
+          >Svenska</a
+        >
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  import { selectLocale } from '../lib/i18n';
+
+  const gateway = document.querySelector<HTMLElement>('.language-gateway');
+  if (gateway) {
+    const saved = localStorage.getItem('brand-starter:locale');
+    const locale =
+      saved === 'en' || saved === 'sv'
+        ? saved
+        : selectLocale(navigator.languages);
+    const target =
+      locale === 'sv' ? gateway.dataset.svPath : gateway.dataset.enPath;
+    if (target) window.location.replace(target);
+  }
+</script>
+
+<style>
+  .language-gateway {
+    display: grid;
+    min-block-size: 100vh;
+    place-items: center;
+    padding: var(--gutter);
+  }
+
+  h1 {
+    font: var(--text-heading);
+  }
+
+  p:not(.eyebrow) {
+    color: var(--color-text-muted);
+  }
+
+  .button--light {
+    color: var(--color-text);
+    background: transparent;
+    border-color: var(--color-border-strong);
+  }
+</style>

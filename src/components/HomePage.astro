@@ -1,0 +1,314 @@
+---
+import BrandMark from './BrandMark.astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { siteConfig, type Locale } from '../config/site';
+import { translations } from '../i18n/translations';
+import { localePath } from '../lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = translations[locale];
+const canonicalPath = localePath(locale, '/', import.meta.env.BASE_URL);
+---
+
+<BaseLayout
+  {locale}
+  title={copy.meta.title}
+  description={copy.meta.description}
+  {canonicalPath}
+>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <BrandMark href={canonicalPath} />
+      <div class="cluster">
+        <a class="contact-link" href="#contact">{copy.navigation.contact}</a>
+        <LanguageSwitcher {locale} label={copy.navigation.language} />
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero container">
+      <div class="source-line" aria-hidden="true"><span></span></div>
+      <div class="hero__content stack">
+        <p class="eyebrow">{copy.hero.eyebrow}</p>
+        <h1>{copy.hero.title}</h1>
+        <p class="hero__introduction">{copy.hero.introduction}</p>
+        <div>
+          <a class="button" href="#foundation">{copy.hero.action}</a>
+        </div>
+      </div>
+      <p class="hero__note" aria-hidden="true">
+        {siteConfig.shortName} / {locale.toUpperCase()}
+      </p>
+    </section>
+
+    <section id="foundation" class="foundation section">
+      <div class="container">
+        <header class="section-heading stack">
+          <p class="eyebrow">{copy.foundation.eyebrow}</p>
+          <h2>{copy.foundation.title}</h2>
+        </header>
+        <div class="principles">
+          {
+            copy.foundation.items.map((item, index) => (
+              <article class="principle">
+                <span aria-hidden="true">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="contact section">
+      <div class="container contact__inner">
+        <div class="stack">
+          <p class="eyebrow">{copy.contact.eyebrow}</p>
+          <h2>{copy.contact.title}</h2>
+        </div>
+        <div class="stack contact__action">
+          <p>{copy.contact.description}</p>
+          <div>
+            <a class="button button--light" href={`mailto:${siteConfig.email}`}
+              >{copy.contact.action}</a
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <BrandMark href={canonicalPath} />
+      <p>{copy.footer}</p>
+      <p>© {new Date().getFullYear()}</p>
+    </div>
+  </footer>
+</BaseLayout>
+
+<style>
+  .site-header {
+    position: relative;
+    z-index: 10;
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .site-header__inner,
+  .site-footer__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-block-size: 5rem;
+    gap: var(--space-5);
+  }
+
+  .contact-link {
+    color: var(--color-text-muted);
+    font: var(--text-utility);
+    text-decoration: none;
+  }
+
+  .contact-link:hover {
+    color: var(--color-text);
+  }
+
+  .hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(2.5rem, 0.35fr) minmax(0, 4fr) minmax(
+        5rem,
+        1fr
+      );
+    min-block-size: clamp(39rem, 82vh, 52rem);
+    padding-block: clamp(5rem, 12vw, 9rem);
+  }
+
+  .source-line {
+    position: relative;
+    border-inline-start: 1px solid var(--color-border-strong);
+  }
+
+  .source-line::before,
+  .source-line::after,
+  .source-line span {
+    position: absolute;
+    inline-size: 0.55rem;
+    block-size: 0.55rem;
+    translate: -50% 0;
+    background: var(--color-background);
+    border: 1px solid var(--color-border-strong);
+    content: '';
+  }
+
+  .source-line::before {
+    inset-block-start: 0;
+  }
+
+  .source-line span {
+    inset-block-start: 50%;
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .source-line::after {
+    inset-block-end: 0;
+  }
+
+  .hero__content {
+    align-self: center;
+    max-inline-size: 60rem;
+    padding-inline: clamp(1.5rem, 5vw, 5rem);
+  }
+
+  .hero h1 {
+    max-inline-size: 13ch;
+    font: var(--text-display);
+    letter-spacing: -0.055em;
+  }
+
+  .hero__introduction {
+    max-inline-size: 43rem;
+    color: var(--color-text-muted);
+    font-size: var(--step-2);
+    line-height: 1.55;
+  }
+
+  .hero__note {
+    align-self: end;
+    justify-self: end;
+    margin: 0;
+    color: var(--color-text-subtle);
+    font: var(--text-utility);
+    writing-mode: vertical-rl;
+  }
+
+  .foundation {
+    background: var(--color-surface);
+    border-block: 1px solid var(--color-border);
+  }
+
+  .section-heading {
+    max-inline-size: 46rem;
+    margin-block-end: var(--space-8);
+  }
+
+  .section-heading h2,
+  .contact h2 {
+    font: var(--text-heading);
+    letter-spacing: -0.04em;
+  }
+
+  .principles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-block-start: 1px solid var(--color-border-strong);
+  }
+
+  .principle {
+    padding: var(--space-6) var(--space-6) var(--space-7) 0;
+  }
+
+  .principle + .principle {
+    padding-inline-start: var(--space-6);
+    border-inline-start: 1px solid var(--color-border);
+  }
+
+  .principle span {
+    color: var(--color-accent);
+    font: var(--text-utility);
+  }
+
+  .principle h3 {
+    margin-block: var(--space-5) var(--space-3);
+    font-size: var(--step-2);
+  }
+
+  .principle p {
+    max-inline-size: 31ch;
+    color: var(--color-text-muted);
+  }
+
+  .contact {
+    color: var(--color-on-dark);
+    background: var(--color-dark);
+  }
+
+  .contact__inner {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: var(--space-9);
+    align-items: end;
+  }
+
+  .contact .eyebrow {
+    color: var(--color-accent-soft);
+  }
+
+  .contact__action {
+    max-inline-size: 33rem;
+  }
+
+  .contact__action p {
+    color: var(--color-on-dark-muted);
+    font-size: var(--step-1);
+  }
+
+  .site-footer {
+    border-block-start: 1px solid var(--color-border);
+  }
+
+  .site-footer p {
+    margin: 0;
+    color: var(--color-text-subtle);
+    font: var(--text-caption);
+  }
+
+  @media (max-width: 48rem) {
+    .hero {
+      grid-template-columns: 1.5rem 1fr;
+      min-block-size: auto;
+      padding-block: var(--space-9);
+    }
+
+    .hero__content {
+      padding-inline: var(--space-5) 0;
+    }
+
+    .hero__note {
+      display: none;
+    }
+
+    .principles,
+    .contact__inner {
+      grid-template-columns: 1fr;
+    }
+
+    .principle + .principle {
+      padding-inline-start: 0;
+      border-block-start: 1px solid var(--color-border);
+      border-inline-start: 0;
+    }
+
+    .site-footer__inner {
+      align-items: flex-start;
+      flex-direction: column;
+      padding-block: var(--space-6);
+    }
+  }
+
+  @media (max-width: 34rem) {
+    .contact-link {
+      display: none;
+    }
+  }
+</style>
