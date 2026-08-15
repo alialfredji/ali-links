@@ -9,12 +9,5 @@ export default defineConfig({
   base,
   output: 'static',
   trailingSlash: 'always',
-  i18n: {
-    locales: ['en', 'sv'],
-    defaultLocale: 'en',
-    routing: {
-      prefixDefaultLocale: true,
-    },
-  },
   integrations: [sitemap()],
 });

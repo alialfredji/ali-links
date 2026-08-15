@@ -1,0 +1,61 @@
+<div class="appearance-controls" aria-label="Appearance controls">
+  <button
+    type="button"
+    class="theme-toggle"
+    data-theme-toggle
+    aria-label="Dark theme"
+    aria-pressed="false"
+  >
+    <span class="theme-toggle__label">Dark</span>
+  </button>
+</div>
+
+<script>
+  import { parseTheme, type Theme } from '../lib/preferences';
+
+  const root = document.documentElement;
+  const themeToggle = document.querySelector<HTMLButtonElement>(
+    '[data-theme-toggle]',
+  );
+
+  const readStored = (key: string) => {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  };
+
+  const store = (key: string, value: string) => {
+    try {
+      localStorage.setItem(key, value);
+    } catch {
+      // Preferences remain session-only when storage is unavailable.
+    }
+  };
+
+  const systemTheme = (): Theme =>
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light';
+
+  const applyTheme = (theme: Theme) => {
+    root.dataset.theme = theme;
+    if (!themeToggle) return;
+    const isDark = theme === 'dark';
+    themeToggle.setAttribute('aria-pressed', String(isDark));
+    const label = themeToggle.querySelector<HTMLElement>(
+      '.theme-toggle__label',
+    );
+    if (label) label.textContent = isDark ? 'Light' : 'Dark';
+    themeToggle.setAttribute('aria-label', 'Dark theme');
+  };
+
+  applyTheme(parseTheme(readStored('ali-links:theme')) ?? systemTheme());
+
+  themeToggle?.addEventListener('click', () => {
+    const theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    applyTheme(theme);
+    store('ali-links:theme', theme);
+  });
+</script>

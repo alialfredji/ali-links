@@ -1,0 +1,163 @@
+---
+title: Ali Links - implementation recap
+description: A local review artifact for the completed Flat and Terminal personal link page.
+kind: recap
+localOnly: true
+---
+
+# Ali Links implementation recap
+
+<Callout id="recap-outcome" tone="success">
+  The Astro Brand Starter is now a single-route, mobile-first personal link page. Flat is the public visual direction, Terminal is available only through `?preview=1`, and light/dark theme switching remains public.
+</Callout>
+
+The delivered page follows the sketch's top-to-bottom hierarchy: portrait, name, bio, social destinations, and four primary links. It stays within a 640px column on desktop, uses native links without a client framework, and keeps client JavaScript limited to appearance preferences.
+
+The accompanying Design canvas shows the delivered Flat mobile, Terminal preview, and Flat desktop states. Placeholder content, destinations, and the generated portrait are intentionally ready for the next copy iteration.
+
+## Plan alignment
+
+<Table
+  id="plan-alignment"
+  density="relaxed"
+  columns={["Status", "Delivered evidence"]}
+  rows={[
+    ["Delivered", "One canonical root route, Flat public default, Terminal preview via ?preview=1, public light/dark theme, generated portrait, Simple Icons, static output, tests, and responsive verification"],
+    ["Changed", "The social placeholder uses Substack instead of LinkedIn because the installed Simple Icons release does not export a LinkedIn mark"],
+    ["Deferred", "Final identity copy, real URLs, final portrait, analytics, additional routes, deployment, and a new public origin remain outside this slice"]
+  ]}
+/>
+
+## State model
+
+<Diagram
+  id="delivered-state-model"
+  data={{
+    html: "<div class='recap-flow'><section><strong>Static profile</strong><span>profile.ts owns name, email, bio, portrait, socials, and links</span></section><div class='arrow'>→</div><section><strong>One Astro route</strong><span>/ renders semantic anchors and optimized local imagery</span></section><div class='branches'><section><strong>Public</strong><span>Flat + light/dark</span></section><section><strong>?preview=1</strong><span>Flat/Terminal + light/dark</span></section></div></div>",
+    css: ".recap-flow{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;color:var(--wf-ink)}.recap-flow section{display:flex;min-height:100px;flex-direction:column;justify-content:center;gap:8px;padding:16px;border:1px solid var(--wf-line);background:var(--wf-paper)}.recap-flow span{color:var(--wf-muted);font-size:12px}.arrow{color:var(--wf-muted)}.branches{display:grid;grid-column:1/-1;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:720px){.recap-flow{grid-template-columns:1fr}.arrow{text-align:center;rotate:90deg}.branches{grid-column:auto;grid-template-columns:1fr}}",
+    caption: "One content tree feeds two review styles. Normal visits always force Flat while theme preference persists independently.",
+    frame: "show",
+    renderMode: "design"
+  }}
+/>
+
+## Changed footprint
+
+<FileTree
+  id="changed-files"
+  title="ali-links working tree"
+  entries={[
+    { path: "astro.config.mjs", change: "modified", note: "Removed localized routing while preserving static output and sitemap generation" },
+    { path: "package.json", change: "modified", note: "Renamed the package and added Simple Icons plus Sharp" },
+    { path: ".prettierignore", change: "modified", note: "Keeps renderer-owned plan MDX out of the source formatter" },
+    { path: "src/assets/profile-placeholder.png", change: "added", note: "Generated grayscale portrait, resized to a 512px project source" },
+    { path: "src/config/profile.ts", change: "added", note: "Single editable surface for profile identity and destinations" },
+    { path: "src/config/site.ts", change: "modified", note: "Derives public metadata identity from profile.ts" },
+    { path: "src/components/ProfileLinks.astro", change: "added", note: "Owns the sketch-aligned information hierarchy" },
+    { path: "src/components/StyleControls.astro", change: "added", note: "Public theme toggle and preview-gated style controls" },
+    { path: "src/components/SocialLinks.astro", change: "added", note: "Accessible social anchors using Simple Icons paths" },
+    { path: "src/components/LinkList.astro", change: "added", note: "Full-width native link rows with decorative Flat/Terminal affordances" },
+    { path: "src/layouts/BaseLayout.astro", change: "modified", note: "Applies saved theme and preview style before paint" },
+    { path: "src/components/SeoHead.astro", change: "modified", note: "Single-language canonical metadata and Person JSON-LD" },
+    { path: "src/pages/index.astro", change: "modified", note: "Root route renders the profile page directly" },
+    { path: "src/pages/en/index.astro", change: "removed", note: "Localized starter route retired" },
+    { path: "src/pages/sv/index.astro", change: "removed", note: "Localized starter route retired" },
+    { path: "src/styles/tokens.css", change: "modified", note: "Accessible monochrome theme and style tokens" },
+    { path: "src/styles/global.css", change: "modified", note: "Mobile-first composition, states, focus, motion, and terminal overrides" },
+    { path: "src/lib/preferences.ts", change: "added", note: "Pure validation for style, theme, and preview state" },
+    { path: "src/lib/paths.ts", change: "added", note: "Base-safe static asset and canonical paths" },
+    { path: "tests/preferences.test.ts", change: "added", note: "Preference and preview regression tests" },
+    { path: "tests/paths.test.ts", change: "added", note: "Root and repository-subpath regression tests" }
+  ]}
+/>
+
+## Key changes
+
+<TabsBlock
+  id="key-change-evidence"
+  orientation="horizontal"
+  tabs={[
+    {
+      id: "root-route",
+      label: "One root route",
+      blocks: [{
+        id: "root-route-diff",
+        type: "diff",
+        data: {
+          filename: "src/pages/index.astro",
+          language: "astro",
+          mode: "split",
+          before: "const enPath = localePath('en', '/', import.meta.env.BASE_URL);\nconst svPath = localePath('sv', '/', import.meta.env.BASE_URL);\n\n<main class=\"language-gateway\">\n  <a href={enPath}>English</a>\n  <a href={svPath}>Svenska</a>\n</main>",
+          after: "const canonicalPath = withBase('/', import.meta.env.BASE_URL);\n\n<BaseLayout\n  title={`${profile.name} | Links`}\n  description={siteConfig.description}\n  {canonicalPath}\n>\n  <ProfileLinks />\n</BaseLayout>",
+          annotations: [
+            { side: "after", lines: "1", label: "Base-safe canonical", note: "Root and repository-subpath builds use the same route source." },
+            { side: "after", lines: "8", label: "One composition", note: "The language gateway is replaced by the profile hierarchy." }
+          ]
+        }
+      }]
+    },
+    {
+      id: "appearance",
+      label: "Appearance state",
+      blocks: [{
+        id: "appearance-code",
+        type: "annotated-code",
+        data: {
+          language: "ts",
+          filename: "src/lib/preferences.ts",
+          code: "export const styleValues = ['flat', 'terminal'] as const;\nexport const themeValues = ['light', 'dark'] as const;\n\nexport function parseStyle(value: string | null) {\n  return value === 'terminal' ? 'terminal' : 'flat';\n}\n\nexport function isPreviewMode(search: string) {\n  return new URLSearchParams(search).get('preview') === '1';\n}",
+          annotations: [
+            { lines: "1-2", label: "Closed state set", note: "Unknown storage values never reach document data attributes." },
+            { lines: "8-10", label: "Explicit gate", note: "Only preview=1 reveals the style selector; normal visits force Flat." }
+          ]
+        }
+      }]
+    },
+    {
+      id: "profile-contract",
+      label: "Profile contract",
+      blocks: [{
+        id: "profile-contract-code",
+        type: "annotated-code",
+        data: {
+          language: "ts",
+          filename: "src/config/profile.ts",
+          code: "export const profile = {\n  name: 'Profile Name',\n  email: placeholderEmail,\n  bio: 'A short introduction about your work, interests, and current focus.',\n  image: { src: profilePlaceholder, alt: 'Placeholder portrait for Profile Name' },\n  socials: [/* four build-time Simple Icons */],\n  links: [/* four native destinations */]\n};",
+          annotations: [
+            { lines: "2-4", label: "Single identity source", note: "Visible content and site metadata now derive from the same profile fields." },
+            { lines: "5-7", label: "Replaceable placeholders", note: "Final portrait, icons, and destinations can be iterated without layout edits." }
+          ]
+        }
+      }]
+    },
+    {
+      id: "verification",
+      label: "Verification",
+      blocks: [{
+        id: "verification-code",
+        type: "code",
+        data: {
+          language: "text",
+          filename: "verified-results.txt",
+          code: "pnpm validate: passed\nAstro diagnostics: 0 errors, 0 warnings, 0 hints\nVitest: 2 files, 6 tests passed\nStatic routes: /, /llms.txt, /robots.txt\nRoot build: passed\nBASE_PATH=/ali-links/ build: passed\nViewport overflow checks: 320, 375, 390, 430, 768, 1024, 1440 passed\nProduction Lighthouse mobile: 100 performance, 100 accessibility, 100 best practices, 100 SEO\nIndependent Sol review: all findings resolved"
+        }
+      }]
+    }
+  ]}
+/>
+
+## Verification status
+
+<Checklist
+  id="recap-verification"
+  items={[
+    { id: "recap-format", label: "Full pnpm validate gate passes", checked: true },
+    { id: "recap-routes", label: "Only the canonical root profile page is generated", checked: true },
+    { id: "recap-preview", label: "Normal visits force Flat and ?preview=1 reveals Flat/Terminal", checked: true },
+    { id: "recap-theme", label: "Light/dark state persists with stable accessible toggle semantics", checked: true },
+    { id: "recap-mobile", label: "Required mobile and desktop widths have no horizontal overflow", checked: true },
+    { id: "recap-a11y", label: "Non-text border contrast exceeds 3:1 in both themes", checked: true },
+    { id: "recap-lighthouse", label: "Production Lighthouse mobile scores 100 in all four categories", checked: true },
+    { id: "recap-review", label: "Independent final review confirms all findings resolved", checked: true }
+  ]}
+/>

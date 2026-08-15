@@ -1,0 +1,449 @@
+---
+title: Ali Links - mobile-first visual system
+description: A reviewable implementation plan for a monochrome personal link page with Flat and Terminal preview styles plus light and dark themes.
+---
+
+# Ali Links
+
+Build a fast personal link page from the Astro Brand Starter. The public page keeps one shared profile, social set, and link list in the Flat style. A review-only `?preview=1` mode exposes Flat and Terminal for comparison. Light and dark theme choices remain public and independent from the preview style.
+
+<Callout id="plan-recommendation" tone="decision">
+  Keep the starter's static Astro architecture and replace the localized starter
+  routes with one focused profile route at `/`. Store profile content in one
+  typed configuration file, render it with semantic links, and express four
+  review combinations through CSS tokens and two data attributes on the document
+  root. Outside `?preview=1`, the style is always Flat.
+</Callout>
+
+## Design read and dials
+
+Reading this as a mobile-first personal profile for social visitors, with a strict monochrome language, leaning toward custom native CSS rather than a product design system.
+
+<Table
+  id="design-dials"
+  density="relaxed"
+  columns={['Dial', 'Value', 'Effect']}
+  rows={[
+    [
+      'DESIGN_VARIANCE',
+      '5',
+      'The centered vertical silhouette follows the sketch. Variation comes from type, border rhythm, and interaction details.',
+    ],
+    [
+      'MOTION_INTENSITY',
+      '4',
+      'Short entry, hover, focus, and press transitions communicate hierarchy and feedback without scroll effects.',
+    ],
+    [
+      'VISUAL_DENSITY',
+      '3',
+      'The profile header breathes and four primary links fit naturally on common mobile screens.',
+    ],
+  ]}
+/>
+
+The chosen foundation is the starter's existing Astro components and layered CSS. No formal component library applies to this small public page. The visual system is an honest custom aesthetic with sharp rectangles, one-pixel borders, near-black ink, off-white paper, and no accent color.
+
+## Visual directions
+
+<Table
+  id="style-directions"
+  density="relaxed"
+  columns={['Style', 'Typography and line treatment', 'Interaction character']}
+  rows={[
+    [
+      'Flat',
+      'Neutral sans, one-pixel borders, clean labels, generous white space',
+      'Foreground and background invert on hover; press moves down one pixel',
+    ],
+    [
+      'Terminal',
+      'Monospace text, prompt markers, bracketed preview controls, denser metadata',
+      'Link label gains a command prompt and the press state resembles a confirmed command',
+    ],
+  ]}
+/>
+
+Both styles keep the exact same content order from the sketch: profile image, name, bio, social icons, then primary links. The public theme toggle stays compact and secondary to the profile. The Flat and Terminal selector appears only in explicit review mode via `?preview=1`.
+
+## Done means
+
+<Checklist
+  id="done-criteria"
+  items={[
+    {
+      id: 'done-mobile',
+      label:
+        'Mobile widths from 320px to 430px have no horizontal overflow and preserve comfortable tap targets',
+      checked: false,
+    },
+    {
+      id: 'done-desktop',
+      label: 'Desktop centers the profile within a 640px maximum content width',
+      checked: false,
+    },
+    {
+      id: 'done-styles',
+      label:
+        'Flat and Terminal share one content model; the selector appears only with ?preview=1',
+      checked: false,
+    },
+    {
+      id: 'done-themes',
+      label:
+        'Light and dark themes work in every style, default to the system preference, and persist manual choice',
+      checked: false,
+    },
+    {
+      id: 'done-accessible',
+      label:
+        'Keyboard focus, reduced motion, semantic links, image alternative text, and WCAG AA contrast are verified',
+      checked: false,
+    },
+    {
+      id: 'done-static',
+      label:
+        'The page remains statically generated and all links work before client JavaScript runs',
+      checked: false,
+    },
+    {
+      id: 'done-validate',
+      label: 'pnpm validate and a production preview pass',
+      checked: false,
+    },
+  ]}
+/>
+
+## Content contract
+
+Placeholder text and destinations live in a typed profile object instead of being scattered through the markup. Replacing the placeholder profile later should require edits in one file plus swapping the local image asset.
+
+<TabsBlock
+  id="implementation-files"
+  orientation="vertical"
+  tabs={[
+    {
+      id: 'profile-data',
+      label: 'Profile data',
+      blocks: [
+        {
+          id: 'profile-data-code',
+          type: 'annotated-code',
+          data: {
+            language: 'ts',
+            filename: 'src/config/profile.ts',
+            code: "export type ProfileStyle = 'flat' | 'terminal';\n\nexport const profile = {\n  name: 'Profile name',\n  bio: 'A short introduction goes here.',\n  image: { src: profilePlaceholder, alt: 'Profile photo placeholder' },\n  socials: [\n    { id: 'github', label: 'GitHub', href: '#' },\n    { id: 'linkedin', label: 'LinkedIn', href: '#' }\n  ],\n  links: [\n    { id: 'primary', label: 'Primary link', href: '#' },\n    { id: 'project', label: 'Latest project', href: '#' },\n    { id: 'writing', label: 'Writing', href: '#' },\n    { id: 'contact', label: 'Contact', href: '#' }\n  ]\n} as const;",
+            annotations: [
+              {
+                lines: '1',
+                label: 'Closed style set',
+                note: 'The same union is reused by the selector, storage parser, and document data attribute.',
+              },
+              {
+                lines: '3-17',
+                label: 'One replacement surface',
+                note: 'Name, bio, image, icons, and link order can be finalized without editing layout components.',
+              },
+              {
+                lines: '7-10',
+                label: 'Accessible icons',
+                note: 'Visible brand icons retain explicit labels for screen readers and tooltips.',
+              },
+            ],
+          },
+        },
+      ],
+    },
+    {
+      id: 'page-composition',
+      label: 'Page composition',
+      blocks: [
+        {
+          id: 'page-composition-code',
+          type: 'annotated-code',
+          data: {
+            language: 'astro',
+            filename: 'src/components/ProfileLinks.astro',
+            code: '<main id="main" class="profile-page">\n  <StyleControls />\n  <header class="profile-header">\n    <ResponsiveImage {...profile.image} priority />\n    <h1>{profile.name}</h1>\n    <p>{profile.bio}</p>\n    <SocialLinks items={profile.socials} />\n  </header>\n  <nav aria-label="Primary links">\n    <LinkList items={profile.links} />\n  </nav>\n</main>',
+            annotations: [
+              {
+                lines: '1',
+                label: 'Stable page landmark',
+                note: "The starter's skip link continues to target the main content.",
+              },
+              {
+                lines: '2',
+                label: 'Secondary controls',
+                note: 'Preferences appear first in source order but remain visually compact.',
+              },
+              {
+                lines: '3-8',
+                label: 'Identity cluster',
+                note: 'The hierarchy mirrors the supplied sketch and stays identical across styles.',
+              },
+              {
+                lines: '9-11',
+                label: 'Real navigation',
+                note: 'Primary destinations remain native anchor elements and work without JavaScript.',
+              },
+            ],
+          },
+        },
+      ],
+    },
+    {
+      id: 'preference-model',
+      label: 'Preference model',
+      blocks: [
+        {
+          id: 'preference-model-code',
+          type: 'annotated-code',
+          data: {
+            language: 'ts',
+            filename: 'src/lib/preferences.ts',
+            code: "export const styleValues = ['flat', 'terminal'] as const;\nexport const themeValues = ['light', 'dark'] as const;\n\nexport function parseStyle(value: string | null) {\n  return styleValues.includes(value as never) ? value : 'flat';\n}\n\nexport function parseTheme(value: string | null) {\n  return themeValues.includes(value as never) ? value : null;\n}",
+            annotations: [
+              {
+                lines: '1-2',
+                label: 'Public state contract',
+                note: 'Only known values can reach data-style or data-theme.',
+              },
+              {
+                lines: '4-9',
+                label: 'Testable boundary',
+                note: 'Storage parsing stays pure so malformed values and default behavior are covered by Vitest.',
+              },
+            ],
+          },
+        },
+      ],
+    },
+    {
+      id: 'token-system',
+      label: 'Token system',
+      blocks: [
+        {
+          id: 'token-system-code',
+          type: 'annotated-code',
+          data: {
+            language: 'css',
+            filename: 'src/styles/tokens.css',
+            code: ":root {\n  --page-width: 40rem;\n  --radius-control: 0;\n  --line-width: 1px;\n  --press-distance: 1px;\n}\n\n:root[data-style='terminal'] {\n  --font-interface: ui-monospace, monospace;\n}\n\n:root[data-theme='dark'] {\n  color-scheme: dark;\n}",
+            annotations: [
+              {
+                lines: '1-6',
+                label: 'Shared geometry',
+                note: 'The page stays sharp, narrow, and consistent before any style override.',
+              },
+              {
+                lines: '8-10',
+                label: 'Minor style changes',
+                note: 'Terminal adjusts a small token set instead of duplicating the layout.',
+              },
+              {
+                lines: '12-14',
+                label: 'Orthogonal theme',
+                note: 'Theme changes color tokens independently from the selected visual style.',
+              },
+            ],
+          },
+        },
+      ],
+    },
+  ]}
+/>
+
+## File map
+
+<Table
+  id="file-map"
+  density="relaxed"
+  columns={['File', 'Action', 'Responsibility']}
+  rows={[
+    [
+      'package.json',
+      'Modify',
+      'Rename the package to ali-links and add simple-icons for build-time social brand icons',
+    ],
+    [
+      'src/config/profile.ts',
+      'Create',
+      'Typed placeholder profile, social destinations, and primary links',
+    ],
+    [
+      'src/assets/profile-placeholder.*',
+      'Create',
+      'Generated monochrome profile placeholder with intrinsic dimensions',
+    ],
+    [
+      'src/pages/index.astro',
+      'Modify',
+      'Render the canonical profile page at the root route',
+    ],
+    [
+      'src/components/ProfileLinks.astro',
+      'Create',
+      'Own the single-column information hierarchy',
+    ],
+    [
+      'src/components/StyleControls.astro',
+      'Create',
+      'Render the public theme toggle and reveal the Flat/Terminal selector only in ?preview=1 mode',
+    ],
+    [
+      'src/components/SocialLinks.astro',
+      'Create',
+      'Render Simple Icons brand marks with labels',
+    ],
+    [
+      'src/components/LinkList.astro',
+      'Create',
+      'Render consistent full-width rectangular links',
+    ],
+    [
+      'src/lib/preferences.ts',
+      'Create',
+      'Validate style and theme values from storage',
+    ],
+    [
+      'src/layouts/BaseLayout.astro',
+      'Modify',
+      "Apply the saved or system theme before paint and keep the starter's metadata shell",
+    ],
+    [
+      'src/styles/tokens.css',
+      'Modify',
+      'Define monochrome theme tokens and style-specific geometry',
+    ],
+    [
+      'src/styles/global.css',
+      'Modify',
+      'Add responsive composition, focus, hover, press, entry, and reduced-motion rules',
+    ],
+    [
+      'tests/preferences.test.ts',
+      'Create',
+      'Cover preference parsing, preview detection, and default selection',
+    ],
+    [
+      'src/i18n and localized routes',
+      'Remove',
+      'Retire the starter gateway and localized pages so / is the only profile route',
+    ],
+  ]}
+/>
+
+## State and rendering model
+
+<Diagram
+  id="state-model"
+  data={{
+    html: "<div class='state-grid'><section class='diagram-panel'><h3>Content</h3><div class='diagram-box'><strong>profile.ts</strong><p class='diagram-muted'>One name, bio, image, social set, and link order</p></div></section><section class='diagram-panel'><h3>Style axis</h3><div class='choices'><span class='diagram-pill'>flat</span><span class='diagram-pill'>terminal</span></div><p class='diagram-muted'>Terminal is available only with ?preview=1</p></section><section class='diagram-panel'><h3>Theme axis</h3><div class='choices'><span class='diagram-pill'>light</span><span class='diagram-pill'>dark</span></div><p class='diagram-muted'>Stored as ali-links:theme</p></section><section class='diagram-panel output'><h3>One static document</h3><div class='diagram-box'><strong>data-style + data-theme</strong><p class='diagram-muted'>CSS tokens produce four review combinations from one page tree</p></div></section></div>",
+    css: '.state-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;color:var(--wf-ink)}.diagram-panel{display:flex;flex-direction:column;gap:12px;padding:18px}.choices{display:flex;flex-wrap:wrap;gap:8px}.output{grid-column:1/-1}.diagram-box p{margin-bottom:0}@media(max-width:720px){.state-grid{grid-template-columns:1fr}.output{grid-column:auto}}',
+    caption:
+      'Content is static. Style and theme are small progressive-enhancement states applied to the document root.',
+    frame: 'show',
+    renderMode: 'design',
+  }}
+/>
+
+The theme bootstrap runs inline in the document head so a returning visitor does not see a light-mode flash. With JavaScript disabled, Flat remains the style fallback and the CSS media query follows the system color preference. Outside `?preview=1`, stored Terminal choices are ignored so visitors always receive the approved Flat direction.
+
+## Ordered implementation
+
+1. Rename the cloned package and retain the starter repository as the `upstream` remote. Do not create a public origin or deploy during this slice.
+2. Add `profile.ts`, the monochrome profile placeholder, and the build-time Simple Icons dependency.
+3. Replace the current home composition with `ProfileLinks.astro`, `SocialLinks.astro`, `LinkList.astro`, and `StyleControls.astro`.
+4. Refactor `tokens.css` into shared geometry, light and dark colors, and the Flat and Terminal overrides. Keep all controls sharp with one documented radius rule.
+5. Add the preference bootstrap and click handling. Keep the theme toggle public, reveal the style selector only with `?preview=1`, update `aria-pressed` immediately, persist valid preview selections, and never block navigation.
+6. Update `/` and metadata to describe a personal profile page, then remove the starter's localized routes and language gateway.
+7. Add pure preference tests, run the full starter validation command, and inspect the production build at mobile and desktop widths.
+
+## Responsive and interaction rules
+
+- Mobile is the source layout. Use `padding-inline: clamp(1rem, 5vw, 1.5rem)` and a strict single column below 768px.
+- Desktop changes only the outer breathing room. The profile column remains at `max-inline-size: 40rem` and never stretches into a landing-page layout.
+- Link rows are at least 48px high, span the full column, and keep labels on one line.
+- All interactive radii are zero and both styles use one-pixel lines.
+- Hover communicates destination affordance by inverting ink and paper. Press communicates activation through a one-pixel translation.
+- The initial reveal may stagger the profile and link rows once. `prefers-reduced-motion: reduce` removes entry and translation effects.
+- Focus-visible outlines remain distinct from borders in both themes. Style and theme controls use native buttons with `aria-pressed`.
+- The profile image reserves its final dimensions to avoid layout shift. The eventual real image replaces the local placeholder through Astro's image pipeline.
+
+## Verification
+
+<Checklist
+  id="verification-plan"
+  items={[
+    {
+      id: 'verify-install',
+      label: 'Run pnpm install with the pinned Node 24 and pnpm 10 toolchain',
+      checked: false,
+    },
+    {
+      id: 'verify-tests',
+      label:
+        'Run pnpm validate and confirm format, Astro check, Vitest, and production build all pass',
+      checked: false,
+    },
+    {
+      id: 'verify-routes',
+      label:
+        'Open the built root route and confirm every placeholder link remains a native anchor',
+      checked: false,
+    },
+    {
+      id: 'verify-matrix',
+      label:
+        'Inspect Flat and Terminal in both light and dark themes through ?preview=1',
+      checked: false,
+    },
+    {
+      id: 'verify-mobile',
+      label:
+        'Test 320px, 375px, 390px, and 430px widths with no clipping or horizontal scroll',
+      checked: false,
+    },
+    {
+      id: 'verify-desktop',
+      label:
+        'Test 768px, 1024px, and 1440px widths and confirm the 640px maximum column',
+      checked: false,
+    },
+    {
+      id: 'verify-keyboard',
+      label:
+        'Tab through controls, social icons, and links; confirm visible focus and logical order',
+      checked: false,
+    },
+    {
+      id: 'verify-storage',
+      label:
+        'Reload after each preview selection, verify normal visits force Flat, test malformed localStorage values, and test first visit with both system themes',
+      checked: false,
+    },
+    {
+      id: 'verify-motion',
+      label:
+        'Enable reduced motion and confirm all automatic and press translations collapse safely',
+      checked: false,
+    },
+    {
+      id: 'verify-lighthouse',
+      label:
+        'Run Lighthouse mobile and address LCP, CLS, contrast, and accessibility findings',
+      checked: false,
+    },
+  ]}
+/>
+
+## Scope boundary
+
+This first slice includes the new local project, one root profile route, placeholder content and image, Flat as the public style, Terminal as a `?preview=1` comparison, public light and dark themes, responsive layout, metadata updates, tests, and local verification. It defers final copy, real destinations, final portrait, analytics, contact forms, a CMS, additional pages, deployment, and a new GitHub origin.
+
+<Callout id="settled-decisions" tone="decision">
+  Settled for the first iteration: use one canonical root route, keep Flat as
+  the public style, and expose the Flat/Terminal selector only when the URL
+  includes `?preview=1`. The light/dark theme toggle remains visible to
+  everyone.
+</Callout>

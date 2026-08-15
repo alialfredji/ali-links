@@ -2,54 +2,37 @@
   :root {
     color-scheme: light;
 
-    --color-background: #f6f8fb;
-    --color-surface: #edf1f6;
-    --color-surface-raised: #ffffff;
-    --color-text: #132033;
-    --color-text-muted: #526174;
-    --color-text-subtle: #7f8b9b;
-    --color-border: #d8e0e9;
-    --color-border-strong: #aab7c6;
-    --color-accent: #2358e8;
-    --color-accent-soft: #9bb7ff;
-    --color-dark: #111d2e;
-    --color-on-dark: #f5f7fb;
-    --color-on-dark-muted: #b9c5d5;
+    --color-background: #f2f2ed;
+    --color-surface: #e7e7e1;
+    --color-text: #171717;
+    --color-text-muted: #5f5f59;
+    --color-border: #777770;
+    --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+    --font-interface: var(--font-mono);
+    --page-width: 40rem;
+    --gutter: clamp(1rem, 5vw, 1.5rem);
+    --line-width: 1px;
+    --press-distance: 1px;
+    --control-radius: 0;
+  }
 
-    --font-display:
-      'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
-    --font-body:
-      Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-      'Segoe UI', sans-serif;
-    --font-utility: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  :root[data-theme='dark'] {
+    color-scheme: dark;
+    --color-background: #171717;
+    --color-surface: #242422;
+    --color-text: #f2f2ed;
+    --color-text-muted: #b8b8b0;
+    --color-border: #8a8a83;
+  }
 
-    --step--1: clamp(0.78rem, 0.76rem + 0.08vw, 0.84rem);
-    --step-0: clamp(1rem, 0.96rem + 0.16vw, 1.1rem);
-    --step-1: clamp(1.2rem, 1.08rem + 0.42vw, 1.45rem);
-    --step-2: clamp(1.5rem, 1.25rem + 0.78vw, 2rem);
-    --step-3: clamp(2rem, 1.55rem + 1.5vw, 3rem);
-    --step-4: clamp(3.2rem, 2.25rem + 3.5vw, 6.5rem);
-
-    --text-display: 500 var(--step-4) / 0.98 var(--font-display);
-    --text-heading: 500 var(--step-3) / 1.05 var(--font-display);
-    --text-caption: 500 var(--step--1) / 1.5 var(--font-body);
-    --text-utility: 600 0.75rem / 1 var(--font-utility);
-
-    --space-1: 0.25rem;
-    --space-2: 0.5rem;
-    --space-3: 0.75rem;
-    --space-4: 1rem;
-    --space-5: 1.5rem;
-    --space-6: 2rem;
-    --space-7: 3rem;
-    --space-8: 4rem;
-    --space-9: clamp(5rem, 9vw, 8rem);
-
-    --container: 78rem;
-    --gutter: clamp(1.25rem, 4vw, 3rem);
-    --radius-small: 0.3rem;
-    --radius-round: 999px;
-    --shadow-focus: 0 0 0 3px
-      color-mix(in srgb, var(--color-accent) 30%, transparent);
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+      color-scheme: dark;
+      --color-background: #171717;
+      --color-surface: #242422;
+      --color-text: #f2f2ed;
+      --color-text-muted: #b8b8b0;
+      --color-border: #8a8a83;
+    }
   }
 }

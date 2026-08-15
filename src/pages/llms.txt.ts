@@ -1,25 +1,23 @@
 import type { APIRoute } from 'astro';
+import { profile } from '../config/profile';
 import { siteConfig } from '../config/site';
-import { translations } from '../i18n/translations';
-import { localePath } from '../lib/i18n';
+import { withBase } from '../lib/paths';
 
 export const prerender = true;
 
 export const GET: APIRoute = ({ site }) => {
   const origin = site ?? new URL('https://example.com');
-  const en = new URL(localePath('en', '/', import.meta.env.BASE_URL), origin);
-  const sv = new URL(localePath('sv', '/', import.meta.env.BASE_URL), origin);
+  const profileUrl = new URL(withBase('/', import.meta.env.BASE_URL), origin);
   const body = [
     `# ${siteConfig.name}`,
     ``,
-    `> ${translations.en.meta.description}`,
+    `> ${siteConfig.description}`,
     ``,
-    `This is the official public website for ${siteConfig.name}.`,
+    profile.bio,
     ``,
-    `## Languages`,
+    `## Profile`,
     ``,
-    `- [English](${en.href}): ${translations.en.meta.description}`,
-    `- [Svenska](${sv.href}): ${translations.sv.meta.description}`,
+    `- [Profile links](${profileUrl.href}): ${siteConfig.description}`,
     ``,
   ].join('\n');
 

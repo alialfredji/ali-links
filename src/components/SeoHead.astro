@@ -1,54 +1,30 @@
 ---
-import { siteConfig, type Locale } from '../config/site';
-import { localePath, withBase } from '../lib/i18n';
+import { siteConfig } from '../config/site';
+import { withBase } from '../lib/paths';
 
 interface Props {
-  locale: Locale;
   title: string;
   description: string;
   canonicalPath: string;
   noindex?: boolean;
 }
 
-const {
-  locale,
-  title,
-  description,
-  canonicalPath,
-  noindex = false,
-} = Astro.props;
+const { title, description, canonicalPath, noindex = false } = Astro.props;
 const site = Astro.site ?? new URL('https://example.com');
 const canonical = new URL(canonicalPath, site);
 const siteRoot = new URL(withBase('/', import.meta.env.BASE_URL), site);
-const organizationId = `${siteRoot.href}#organization`;
+const personId = `${siteRoot.href}#person`;
 const websiteId = `${siteRoot.href}#website`;
-const alternates = Object.entries(siteConfig.locales).map(
-  ([code, settings]) => ({
-    code,
-    languageTag: settings.languageTag,
-    href: new URL(
-      localePath(code as Locale, '/', import.meta.env.BASE_URL),
-      site,
-    ),
-  }),
-);
-const xDefault = new URL(withBase('/', import.meta.env.BASE_URL), site);
 const socialImage = siteConfig.socialImage
   ? new URL(withBase(siteConfig.socialImage, import.meta.env.BASE_URL), site)
   : null;
-const localeSettings = siteConfig.locales[locale];
-const alternateOgLocales = Object.values(siteConfig.locales)
-  .filter(
-    (settings) => settings.openGraphLocale !== localeSettings.openGraphLocale,
-  )
-  .map((settings) => settings.openGraphLocale);
 
 const structuredData = {
   '@context': 'https://schema.org',
   '@graph': [
     {
-      '@type': siteConfig.organizationType,
-      '@id': organizationId,
+      '@type': 'Person',
+      '@id': personId,
       name: siteConfig.name,
       url: siteRoot.href,
       email: siteConfig.email,
@@ -58,10 +34,7 @@ const structuredData = {
       '@id': websiteId,
       url: siteRoot.href,
       name: siteConfig.name,
-      publisher: { '@id': organizationId },
-      inLanguage: Object.values(siteConfig.locales).map(
-        (settings) => settings.languageTag,
-      ),
+      inLanguage: siteConfig.languageTag,
     },
     {
       '@type': 'WebPage',
@@ -70,8 +43,8 @@ const structuredData = {
       name: title,
       description,
       isPartOf: { '@id': websiteId },
-      about: { '@id': organizationId },
-      inLanguage: localeSettings.languageTag,
+      about: { '@id': personId },
+      inLanguage: siteConfig.languageTag,
     },
   ],
 };
@@ -84,28 +57,13 @@ const structuredData = {
   content={noindex ? 'noindex,follow' : 'index,follow,max-image-preview:large'}
 />
 <link rel="canonical" href={canonical} />
-{
-  alternates.map((alternate) => (
-    <link
-      rel="alternate"
-      hreflang={alternate.languageTag}
-      href={alternate.href}
-    />
-  ))
-}
-<link rel="alternate" hreflang="x-default" href={xDefault} />
 
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content={siteConfig.name} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonical} />
-<meta property="og:locale" content={localeSettings.openGraphLocale} />
-{
-  alternateOgLocales.map((ogLocale) => (
-    <meta property="og:locale:alternate" content={ogLocale} />
-  ))
-}
+<meta property="og:locale" content={siteConfig.openGraphLocale} />
 {socialImage && <meta property="og:image" content={socialImage} />}
 {socialImage && <meta property="og:image:alt" content={title} />}
 

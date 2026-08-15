@@ -1,33 +1,36 @@
 ---
 import SeoHead from '../components/SeoHead.astro';
-import { siteConfig, type Locale } from '../config/site';
-import { withBase } from '../lib/i18n';
+import { siteConfig } from '../config/site';
+import { withBase } from '../lib/paths';
 import '../styles/global.css';
 
 interface Props {
-  locale: Locale;
   title: string;
   description: string;
   canonicalPath: string;
   noindex?: boolean;
 }
 
-const {
-  locale,
-  title,
-  description,
-  canonicalPath,
-  noindex = false,
-} = Astro.props;
+const { title, description, canonicalPath, noindex = false } = Astro.props;
 ---
 
 <!doctype html>
-<html lang={siteConfig.locales[locale].languageTag}>
+<html lang={siteConfig.languageTag}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="theme-color" content="#f6f8fb" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="theme-color"
+      content="#f2f2ed"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#171717"
+      media="(prefers-color-scheme: dark)"
+    />
     <link
       rel="icon"
       type="image/svg+xml"
@@ -37,7 +40,16 @@ const {
       rel="sitemap"
       href={withBase('/sitemap-index.xml', import.meta.env.BASE_URL)}
     />
-    <SeoHead {locale} {title} {description} {canonicalPath} {noindex} />
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        try {
+          const theme = localStorage.getItem('ali-links:theme');
+          if (theme === 'light' || theme === 'dark') root.dataset.theme = theme;
+        } catch {}
+      })();
+    </script>
+    <SeoHead {title} {description} {canonicalPath} {noindex} />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>

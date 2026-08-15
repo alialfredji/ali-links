@@ -1,0 +1,35 @@
+---
+import { profile } from '../config/profile';
+import LinkList from './LinkList.astro';
+import ResponsiveImage from './ResponsiveImage.astro';
+import SocialLinks from './SocialLinks.astro';
+import StyleControls from './StyleControls.astro';
+---
+
+<main id="main" class="profile-page">
+  <StyleControls />
+
+  <div class="profile-content">
+    <header class="profile-header">
+      <ResponsiveImage
+        class="profile-portrait"
+        {...profile.image}
+        sizes="(max-width: 640px) 112px, 120px"
+        widths={[112, 120, 224, 240]}
+        priority
+      />
+      <p class="profile-path" aria-hidden="true">~/profile</p>
+      <h1>{profile.name}</h1>
+      <p class="profile-bio">{profile.bio}</p>
+      <SocialLinks items={profile.socials} />
+    </header>
+
+    <nav class="primary-navigation" aria-label="Primary links">
+      <LinkList items={profile.links} />
+    </nav>
+  </div>
+
+  <footer class="profile-footer">
+    <span aria-hidden="true">status: placeholder-content</span>
+  </footer>
+</main>
