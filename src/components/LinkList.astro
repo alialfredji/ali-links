@@ -12,20 +12,40 @@ const { items } = Astro.props;
   {
     items.map((item, index) => (
       <li>
-        <a
-          class="primary-link"
-          href={item.href}
-          data-link={item.id}
-          data-index={String(index + 1).padStart(2, '0')}
-        >
-          <span class="primary-link__index" aria-hidden="true">
-            {String(index + 1).padStart(2, '0')}
-          </span>
-          <span class="primary-link__label">{item.label}</span>
-          <span class="primary-link__action" aria-hidden="true">
-            open
-          </span>
-        </a>
+        {item.href ? (
+          <a
+            class="primary-link"
+            href={item.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-link={item.id}
+            data-index={String(index + 1).padStart(2, '0')}
+          >
+            <span class="primary-link__index" aria-hidden="true">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <span class="primary-link__label">{item.label}</span>
+            <span class="primary-link__action" aria-hidden="true">
+              open
+            </span>
+          </a>
+        ) : (
+          <button
+            type="button"
+            class="primary-link"
+            data-unavailable-action
+            data-link={item.id}
+            data-index={String(index + 1).padStart(2, '0')}
+          >
+            <span class="primary-link__index" aria-hidden="true">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <span class="primary-link__label">{item.label}</span>
+            <span class="primary-link__action" aria-hidden="true">
+              soon
+            </span>
+          </button>
+        )}
       </li>
     ))
   }

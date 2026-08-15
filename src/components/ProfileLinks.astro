@@ -11,15 +11,20 @@ import StyleControls from './StyleControls.astro';
 
   <div class="profile-content">
     <header class="profile-header">
-      <ResponsiveImage
-        class="profile-portrait"
-        {...profile.image}
-        sizes="(max-width: 640px) 112px, 120px"
-        widths={[112, 120, 224, 240]}
-        priority
-      />
       <p class="profile-path" aria-hidden="true">~/profile</p>
-      <h1>{profile.name}</h1>
+      <div class="profile-intro">
+        <ResponsiveImage
+          class="profile-portrait"
+          {...profile.image}
+          sizes="(max-width: 640px) 112px, 120px"
+          widths={[112, 120, 224, 240]}
+          priority
+        />
+        <div class="profile-identity">
+          <h1>{profile.name}</h1>
+          <p class="profile-headline">{profile.headline}</p>
+        </div>
+      </div>
       <p class="profile-bio">{profile.bio}</p>
       <SocialLinks items={profile.socials} />
     </header>
@@ -32,4 +37,43 @@ import StyleControls from './StyleControls.astro';
   <footer class="profile-footer">
     <span aria-hidden="true">status: placeholder-content</span>
   </footer>
+
+  <dialog class="unavailable-dialog" data-unavailable-dialog>
+    <div class="unavailable-dialog__content">
+      <p class="unavailable-dialog__status" aria-hidden="true">
+        status: not-ready
+      </p>
+      <h2>Sorry, this action doesn’t work yet.</h2>
+      <p>I’m still working on this page. Please check back soon.</p>
+      <button type="button" class="unavailable-dialog__close" data-dialog-close>
+        Close
+      </button>
+    </div>
+  </dialog>
 </main>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>(
+    '[data-unavailable-dialog]',
+  );
+  const unavailableActions = document.querySelectorAll<HTMLButtonElement>(
+    '[data-unavailable-action]',
+  );
+  const closeButton = dialog?.querySelector<HTMLButtonElement>(
+    '[data-dialog-close]',
+  );
+  let lastTrigger: HTMLButtonElement | null = null;
+
+  unavailableActions.forEach((button) => {
+    button.addEventListener('click', () => {
+      lastTrigger = button;
+      dialog?.showModal();
+    });
+  });
+
+  closeButton?.addEventListener('click', () => dialog?.close());
+  dialog?.addEventListener('click', (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+  dialog?.addEventListener('close', () => lastTrigger?.focus());
+</script>

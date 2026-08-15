@@ -69,7 +69,14 @@ See [docs/images.md](docs/images.md) for the complete image contract.
 
 ### GitHub Pages
 
-The included Pages workflow calculates the repository subpath automatically. In **Settings → Pages**, choose **GitHub Actions** as the source. For a custom domain, add repository variables `SITE_URL` and `BASE_PATH=/`.
+The included Pages workflow publishes `dist/` after changes land on `main` and builds canonical URLs for `https://alfredji.com`.
+
+One-time repository and DNS setup:
+
+1. In **Settings → Pages**, choose **GitHub Actions** as the source and set the custom domain to `alfredji.com`.
+2. At the DNS provider, point the apex domain to GitHub Pages with `A` records for `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, and `185.199.111.153`.
+3. Add a `www` `CNAME` record pointing to `alialfredji.github.io` so GitHub can redirect `www.alfredji.com` to the apex domain.
+4. After DNS propagation, enable **Enforce HTTPS** in the repository's Pages settings.
 
 ## Project commands
 

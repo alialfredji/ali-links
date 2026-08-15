@@ -15,22 +15,13 @@ const { title, description, canonicalPath, noindex = false } = Astro.props;
 ---
 
 <!doctype html>
-<html lang={siteConfig.languageTag}>
+<html lang={siteConfig.languageTag} data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="color-scheme" content="light dark" />
-    <meta
-      name="theme-color"
-      content="#f2f2ed"
-      media="(prefers-color-scheme: light)"
-    />
-    <meta
-      name="theme-color"
-      content="#171717"
-      media="(prefers-color-scheme: dark)"
-    />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#171717" />
     <link
       rel="icon"
       type="image/svg+xml"
@@ -40,15 +31,6 @@ const { title, description, canonicalPath, noindex = false } = Astro.props;
       rel="sitemap"
       href={withBase('/sitemap-index.xml', import.meta.env.BASE_URL)}
     />
-    <script is:inline>
-      (() => {
-        const root = document.documentElement;
-        try {
-          const theme = localStorage.getItem('ali-links:theme');
-          if (theme === 'light' || theme === 'dark') root.dataset.theme = theme;
-        } catch {}
-      })();
-    </script>
     <SeoHead {title} {description} {canonicalPath} {noindex} />
   </head>
   <body>

@@ -94,7 +94,7 @@
     margin-inline: auto;
     flex-direction: column;
     gap: clamp(2rem, 7vw, 3rem);
-    padding: var(--gutter);
+    padding: clamp(1.5rem, 6vw, 2rem) var(--gutter) var(--gutter);
   }
 
   .appearance-controls {
@@ -103,6 +103,10 @@
     align-items: center;
     justify-content: flex-end;
     gap: 0.5rem;
+  }
+
+  .appearance-controls[hidden] {
+    display: none;
   }
 
   .theme-toggle {
@@ -140,6 +144,18 @@
     text-align: start;
   }
 
+  .profile-intro {
+    display: grid;
+    inline-size: 100%;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(0.875rem, 4vw, 1.25rem);
+  }
+
+  .profile-identity {
+    min-inline-size: 0;
+  }
+
   .profile-portrait {
     inline-size: clamp(6rem, 27vw, 7rem);
     aspect-ratio: 1;
@@ -161,16 +177,23 @@
   }
 
   .profile-header h1 {
-    margin-block-start: 0.4rem;
-    font-size: clamp(1.75rem, 7vw, 2.125rem);
+    font-size: clamp(1.5rem, 7vw, 2.125rem);
     font-weight: 680;
     line-height: 1.05;
     letter-spacing: -0.045em;
   }
 
-  .profile-bio {
+  .profile-headline {
     max-inline-size: 34ch;
-    margin-block-start: 0.75rem;
+    margin-block-start: 0.5rem;
+    color: var(--color-text-muted);
+    font-weight: 400;
+    line-height: 1.45;
+  }
+
+  .profile-bio {
+    inline-size: 100%;
+    margin-block-start: 1rem;
     color: var(--color-text-muted);
   }
 
@@ -179,7 +202,7 @@
   }
 
   .profile-path {
-    margin-block-start: 1rem;
+    margin-block-end: 0.5rem;
     color: var(--color-text-muted);
     font-size: 0.75rem;
   }
@@ -227,6 +250,7 @@
 
   .primary-link {
     display: flex;
+    inline-size: 100%;
     min-block-size: 3.375rem;
     align-items: center;
     justify-content: space-between;
@@ -234,8 +258,11 @@
     border: var(--line-width) solid var(--color-border);
     gap: 0.75rem;
     font-weight: 500;
+    text-align: start;
     text-decoration: none;
     text-transform: lowercase;
+    background: transparent;
+    cursor: pointer;
     transition:
       color 140ms ease,
       background-color 140ms ease,
@@ -284,6 +311,56 @@
     font-size: 0.6875rem;
     text-align: start;
   }
+
+  .unavailable-dialog {
+    inline-size: min(calc(100% - 2rem), 28rem);
+    padding: 0;
+    border: var(--line-width) solid var(--color-border);
+    border-radius: 0;
+    color: var(--color-text);
+    background: var(--color-background);
+  }
+
+  .unavailable-dialog::backdrop {
+    background: rgb(0 0 0 / 72%);
+  }
+
+  .unavailable-dialog__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: clamp(1.25rem, 5vw, 2rem);
+  }
+
+  .unavailable-dialog__status {
+    color: var(--color-text-muted);
+    font-size: 0.6875rem;
+  }
+
+  .unavailable-dialog h2 {
+    font-size: clamp(1.375rem, 6vw, 1.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+  }
+
+  .unavailable-dialog__content > p:not(.unavailable-dialog__status) {
+    color: var(--color-text-muted);
+  }
+
+  .unavailable-dialog__close {
+    min-block-size: 2.75rem;
+    padding-inline: 1rem;
+    border: var(--line-width) solid var(--color-text);
+    color: var(--color-background);
+    background: var(--color-text);
+    cursor: pointer;
+  }
+
+  .unavailable-dialog__close:hover {
+    color: var(--color-text);
+    background: var(--color-background);
+  }
 }
 
 @layer utilities {
@@ -302,7 +379,7 @@
 
 @media (min-width: 48rem) {
   .profile-page {
-    padding: 2rem 1.5rem;
+    padding: 2.5rem 1.5rem 2rem;
     border-inline: var(--line-width) solid var(--color-border);
   }
 }

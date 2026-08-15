@@ -17,6 +17,8 @@ const { items, label = 'Social profiles' } = Astro.props;
           <a
             class="social-link"
             href={item.href}
+            target="_blank"
+            rel="noopener noreferrer"
             aria-label={item.label}
             title={item.label}
             data-social={item.id}

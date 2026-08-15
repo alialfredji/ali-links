@@ -1,4 +1,4 @@
-<div class="appearance-controls" aria-label="Appearance controls">
+<div class="appearance-controls" aria-label="Appearance controls" hidden>
   <button
     type="button"
     class="theme-toggle"
@@ -11,20 +11,12 @@
 </div>
 
 <script>
-  import { parseTheme, type Theme } from '../lib/preferences';
+  import type { Theme } from '../lib/preferences';
 
   const root = document.documentElement;
   const themeToggle = document.querySelector<HTMLButtonElement>(
     '[data-theme-toggle]',
   );
-
-  const readStored = (key: string) => {
-    try {
-      return localStorage.getItem(key);
-    } catch {
-      return null;
-    }
-  };
 
   const store = (key: string, value: string) => {
     try {
@@ -33,11 +25,6 @@
       // Preferences remain session-only when storage is unavailable.
     }
   };
-
-  const systemTheme = (): Theme =>
-    window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark'
-      : 'light';
 
   const applyTheme = (theme: Theme) => {
     root.dataset.theme = theme;
@@ -51,7 +38,7 @@
     themeToggle.setAttribute('aria-label', 'Dark theme');
   };
 
-  applyTheme(parseTheme(readStored('ali-links:theme')) ?? systemTheme());
+  applyTheme('dark');
 
   themeToggle?.addEventListener('click', () => {
     const theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
