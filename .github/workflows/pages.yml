@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 10
     env:
       SITE_URL: https://alfredji.com
-      BASE_PATH: /
+      BASE_PATH: /ali-links/
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
