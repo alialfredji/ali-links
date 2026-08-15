@@ -9,5 +9,10 @@ export default defineConfig({
   base,
   output: 'static',
   trailingSlash: 'always',
+  vite: {
+    server: {
+      allowedHosts: ['tunnel-4321.alfredji.com'],
+    },
+  },
   integrations: [sitemap()],
 });

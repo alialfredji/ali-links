@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 24 1000 92" role="img" aria-labelledby="title">
+  <title id="title">Modern Builder.</title>
+  <g fill="none" stroke="#f2f2ed" stroke-linecap="square" stroke-linejoin="miter">
+    <g stroke-width="2" opacity="0.28" transform="translate(3 3)">
+      <path d="M18 46 42 70 18 94" />
+      <path d="M54 94h28" />
+      <text x="124" y="94" font-family="SFMono-Regular, Consolas, Liberation Mono, monospace" font-size="68" font-weight="700" letter-spacing="2">MODERN BUILDER.</text>
+    </g>
+    <g stroke-width="2.25">
+      <path d="M18 46 42 70 18 94" />
+      <path d="M54 94h28" />
+      <text x="124" y="94" font-family="SFMono-Regular, Consolas, Liberation Mono, monospace" font-size="68" font-weight="700" letter-spacing="2">MODERN BUILDER.</text>
+    </g>
+  </g>
+</svg>

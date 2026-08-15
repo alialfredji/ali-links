@@ -8,7 +8,8 @@ import {
   siYoutube,
 } from 'simple-icons';
 
-import profilePic from '../assets/ali-alfredji-profile.webp';
+// import modernBuilderBanner from '../assets/modern-builder-banner-short.png';
+import profilePic from '../assets/profile-pic-square.webp';
 
 export interface ProfileImage {
   src: ImageMetadata;
@@ -32,8 +33,9 @@ export interface Profile {
   name: string;
   headline: string;
   email: string;
-  bio: string;
+  bio: readonly string[];
   image: ProfileImage;
+  // banner: ProfileImage;
   socials: readonly SocialLink[];
   links: readonly PrimaryLink[];
 }
@@ -45,20 +47,22 @@ const linkedinIcon = {
 
 export const profile: Profile = {
   name: 'Ali Alfredji',
-  headline: 'Software Engineer, Writer, and Creator',
+  headline: 'Software Engineer & Product Builder',
   email: email,
-  bio: 'Dad. 33 years. 10+ years in tech. 15k+ followers across social media. I help you & your business become more efficient with AI.',
+  bio: [
+    ' I teach builders how to build & operate better with AI, and I help businesses apply the same practices to products, workflows, and internal systems.',
+    ' 10+ years building scalable software products and systems.',
+    ' Currently Software Engineer at Inter IKEA Group. Also operating "Modern Builder" newsletter and community.',
+  ],
   image: {
     src: profilePic,
-    alt: 'Ali Alfredji headshot',
+    alt: 'Ali Alfredji portrait photo',
   },
+  // banner: {
+  //   src: modernBuilderBanner,
+  //   alt: 'Modern Builder.',
+  // },
   socials: [
-    {
-      id: 'github',
-      label: 'GitHub',
-      href: 'https://github.com/alialfredji',
-      icon: siGithub,
-    },
     {
       id: 'substack',
       label: 'Substack',
@@ -66,17 +70,23 @@ export const profile: Profile = {
       icon: siSubstack,
     },
     {
-      id: 'instagram',
-      label: 'Instagram',
-      href: 'https://instagram.com/alialfredji',
-      icon: siInstagram,
-    },
-    {
       id: 'linkedin',
       label: 'LinkedIn',
       href: 'https://linkedin.com/in/alialfredji',
       icon: linkedinIcon,
     },
+    {
+      id: 'github',
+      label: 'GitHub',
+      href: 'https://github.com/alialfredji',
+      icon: siGithub,
+    },
+    // {
+    //   id: 'instagram',
+    //   label: 'Instagram',
+    //   href: 'https://instagram.com/alialfredji',
+    //   icon: siInstagram,
+    // },
     {
       id: 'youtube',
       label: 'YouTube',
@@ -103,21 +113,23 @@ export const profile: Profile = {
       href: 'https://alialf.substack.com/subscribe',
     },
     {
-      id: 'portfolio',
-      label: 'Portfolio',
-    },
-    {
-      id: 'current-project',
-      label: 'Current project',
-    },
-    {
       id: 'notes',
       label: 'Notes and writing',
+      href: 'https://substack.com/@alialfredji',
     },
     {
       id: 'contact',
       label: 'Email me',
       href: `mailto:${email}`,
+    },
+    {
+      id: 'book-call',
+      label: 'Book a 15-min call',
+      href: 'https://cal.com/alialfredji/15min',
+    },
+    {
+      id: 'portfolio',
+      label: 'Portfolio',
     },
   ],
 };

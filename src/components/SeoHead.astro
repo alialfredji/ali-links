@@ -1,5 +1,6 @@
 ---
 import { siteConfig } from '../config/site';
+import { profile } from '../config/profile';
 import { withBase } from '../lib/paths';
 
 interface Props {
@@ -28,6 +29,8 @@ const structuredData = {
       name: siteConfig.name,
       url: siteRoot.href,
       email: siteConfig.email,
+      image: socialImage?.href,
+      sameAs: profile.socials.map((social) => social.href),
     },
     {
       '@type': 'WebSite',
@@ -44,6 +47,7 @@ const structuredData = {
       description,
       isPartOf: { '@id': websiteId },
       about: { '@id': personId },
+      primaryImageOfPage: socialImage?.href,
       inLanguage: siteConfig.languageTag,
     },
   ],
@@ -65,7 +69,11 @@ const structuredData = {
 <meta property="og:url" content={canonical} />
 <meta property="og:locale" content={siteConfig.openGraphLocale} />
 {socialImage && <meta property="og:image" content={socialImage} />}
-{socialImage && <meta property="og:image:alt" content={title} />}
+{
+  socialImage && (
+    <meta property="og:image:alt" content={siteConfig.socialImageAlt} />
+  )
+}
 
 <meta
   name="twitter:card"

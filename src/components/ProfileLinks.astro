@@ -4,10 +4,23 @@ import LinkList from './LinkList.astro';
 import ResponsiveImage from './ResponsiveImage.astro';
 import SocialLinks from './SocialLinks.astro';
 import StyleControls from './StyleControls.astro';
+
+const currentYear = new Date().getFullYear();
 ---
 
 <main id="main" class="profile-page">
   <StyleControls />
+
+  <!-- <div class="profile-banner">
+    <img
+      src={profile.banner.src.src}
+      width={profile.banner.src.width}
+      height={profile.banner.src.height}
+      alt={profile.banner.alt}
+      decoding="async"
+      fetchpriority="high"
+    />
+  </div> -->
 
   <div class="profile-content">
     <header class="profile-header">
@@ -18,14 +31,21 @@ import StyleControls from './StyleControls.astro';
           {...profile.image}
           sizes="(max-width: 640px) 112px, 120px"
           widths={[112, 120, 224, 240]}
-          priority
         />
         <div class="profile-identity">
           <h1>{profile.name}</h1>
           <p class="profile-headline">{profile.headline}</p>
         </div>
       </div>
-      <p class="profile-bio">{profile.bio}</p>
+      <div class="profile-bio">
+        {
+          profile.bio.map((line) => (
+            <span class="profile-bio__line">
+              <span class="profile-bio__text">{line}</span>
+            </span>
+          ))
+        }
+      </div>
       <SocialLinks items={profile.socials} />
     </header>
 
@@ -35,7 +55,7 @@ import StyleControls from './StyleControls.astro';
   </div>
 
   <footer class="profile-footer">
-    <span aria-hidden="true">status: placeholder-content</span>
+    <span>© {currentYear} {profile.name} · Build & Operate better with AI</span>
   </footer>
 
   <dialog class="unavailable-dialog" data-unavailable-dialog>
@@ -43,8 +63,10 @@ import StyleControls from './StyleControls.astro';
       <p class="unavailable-dialog__status" aria-hidden="true">
         status: not-ready
       </p>
-      <h2>Sorry, this action doesn’t work yet.</h2>
-      <p>I’m still working on this page. Please check back soon.</p>
+      <h2 data-dialog-title>This isn’t ready yet.</h2>
+      <p>
+        I’m still putting the finishing touches on it. Please check back soon.
+      </p>
       <button type="button" class="unavailable-dialog__close" data-dialog-close>
         Close
       </button>
@@ -62,11 +84,16 @@ import StyleControls from './StyleControls.astro';
   const closeButton = dialog?.querySelector<HTMLButtonElement>(
     '[data-dialog-close]',
   );
+  const dialogTitle = dialog?.querySelector<HTMLElement>('[data-dialog-title]');
   let lastTrigger: HTMLButtonElement | null = null;
 
   unavailableActions.forEach((button) => {
     button.addEventListener('click', () => {
       lastTrigger = button;
+      const label = button.querySelector<HTMLElement>('.primary-link__label');
+      if (dialogTitle && label) {
+        dialogTitle.textContent = `${label.textContent} isn’t ready yet.`;
+      }
       dialog?.showModal();
     });
   });
