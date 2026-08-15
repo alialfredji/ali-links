@@ -43,8 +43,8 @@ export const profile: Profile = {
   headline: 'Software Engineer & Product Builder',
   email: email,
   bio: [
-    ' I teach builders how to build & operate better with AI, and I help businesses apply the same practices to products, workflows, and internal systems.',
-    ' 10+ years building scalable software products and systems.',
+    ' I share field notes on how to build & operate better with AI, and I help businesses apply the same practices to products, workflows, and internal systems.',
+    ' 10+ years building scalable software products and systems across startups and enterprises.',
     ' Currently Software Engineer at Inter IKEA Group. Also operating "Modern Builder" newsletter and community.',
   ],
   image: {
