@@ -1,5 +1,5 @@
 import type { ImageMetadata } from 'astro';
-import { siGithub, siSubstack, siTiktok, siX, siYoutube } from 'simple-icons';
+import { siGithub, siSubstack, siX, siYoutube } from 'simple-icons';
 
 // import modernBuilderBanner from '../assets/modern-builder-banner-short.png';
 import profilePic from '../assets/profile-pic-square.webp';
