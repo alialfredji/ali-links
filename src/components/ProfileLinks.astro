@@ -6,73 +6,76 @@ import SocialLinks from './SocialLinks.astro';
 import StyleControls from './StyleControls.astro';
 
 const currentYear = new Date().getFullYear();
+const emphasis = 'build & operate better with AI';
+const [introBefore = '', introAfter = ''] = (profile.bio[0] ?? '')
+  .trim()
+  .split(emphasis);
+const remainingBio = profile.bio.slice(1).map((line) => line.trim());
 ---
 
-<main id="main" class="profile-page">
-  <StyleControls />
+<div class="profile-shell">
+  <header class="profile-chrome" aria-label="Page controls">
+    <span class="profile-path" aria-hidden="true">~/profile</span>
+    <StyleControls />
+  </header>
 
-  <!-- <div class="profile-banner">
-    <img
-      src={profile.banner.src.src}
-      width={profile.banner.src.width}
-      height={profile.banner.src.height}
-      alt={profile.banner.alt}
-      decoding="async"
-      fetchpriority="high"
-    />
-  </div> -->
-
-  <div class="profile-content">
-    <header class="profile-header">
-      <p class="profile-path" aria-hidden="true">~/profile</p>
-      <div class="profile-intro">
-        <ResponsiveImage
-          class="profile-portrait"
-          {...profile.image}
-          sizes="(max-width: 640px) 112px, 120px"
-          widths={[112, 120, 224, 240]}
-        />
-        <div class="profile-identity">
-          <h1>{profile.name}</h1>
-          <p class="profile-headline">{profile.headline}</p>
+  <section class="profile-sheet" aria-label="Profile panel">
+    <main id="main" class="profile-page">
+      <header class="profile-header">
+        <div class="profile-hero">
+          <ResponsiveImage
+            class="profile-portrait"
+            {...profile.image}
+            sizes="(max-width: 620px) 76px, 104px"
+            widths={[76, 104, 152, 208, 304]}
+            priority
+          />
+          <div class="profile-identity">
+            <h1>{profile.name}</h1>
+            <p class="profile-headline">{profile.headline}</p>
+          </div>
         </div>
-      </div>
-      <div class="profile-bio">
-        {
-          profile.bio.map((line) => (
-            <span class="profile-bio__line">
-              <span class="profile-bio__text">{line}</span>
-            </span>
-          ))
-        }
-      </div>
-      <SocialLinks items={profile.socials} />
-    </header>
 
-    <nav class="primary-navigation" aria-label="Primary links">
-      <LinkList items={profile.links} />
-    </nav>
-  </div>
+        <p class="profile-bio">
+          {introBefore}<strong>{emphasis}</strong>{introAfter}{' '}
+          {remainingBio.join(' ')}
+        </p>
 
-  <footer class="profile-footer">
-    <span>© {currentYear} {profile.name} · Build & Operate better with AI</span>
-  </footer>
+        <SocialLinks items={profile.socials} />
+      </header>
 
-  <dialog class="unavailable-dialog" data-unavailable-dialog>
-    <div class="unavailable-dialog__content">
-      <p class="unavailable-dialog__status" aria-hidden="true">
-        status: not-ready
-      </p>
-      <h2 data-dialog-title>This isn’t ready yet.</h2>
-      <p>
-        I’m still putting the finishing touches on it. Please check back soon.
-      </p>
-      <button type="button" class="unavailable-dialog__close" data-dialog-close>
-        Close
-      </button>
-    </div>
-  </dialog>
-</main>
+      <nav class="primary-navigation" aria-label="Primary links">
+        <LinkList items={profile.links} />
+      </nav>
+
+      <footer class="profile-footer">
+        <span
+          >© {currentYear} {profile.name} · Build & Operate better with AI</span
+        >
+      </footer>
+
+      <dialog class="unavailable-dialog" data-unavailable-dialog>
+        <div class="unavailable-dialog__content">
+          <p class="unavailable-dialog__status" aria-hidden="true">
+            status: not-ready
+          </p>
+          <h2 data-dialog-title>This isn’t ready yet.</h2>
+          <p>
+            I’m still putting the finishing touches on it. Please check back
+            soon.
+          </p>
+          <button
+            type="button"
+            class="unavailable-dialog__close"
+            data-dialog-close
+          >
+            Close
+          </button>
+        </div>
+      </dialog>
+    </main>
+  </section>
+</div>
 
 <script>
   const dialog = document.querySelector<HTMLDialogElement>(

@@ -9,28 +9,32 @@ interface Props {
 const { items, label = 'Social profiles' } = Astro.props;
 ---
 
-<nav class="social-links" aria-label={label}>
-  <ul>
-    {
-      items.map((item, index) => (
-        <li>
-          <a
-            class="social-link"
-            href={item.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={item.label}
-            title={item.label}
-            data-social={item.id}
-            data-index={String(index + 1).padStart(2, '0')}
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d={item.icon.path} />
-            </svg>
-            <span class="visually-hidden">{item.label}</span>
-          </a>
-        </li>
-      ))
-    }
-  </ul>
-</nav>
+<div class="social-links-wrap">
+  <span class="social-links__label" aria-hidden="true">elsewhere</span>
+  <nav class="social-links" aria-label={label}>
+    <ul>
+      {
+        items.map((item, index) => (
+          <li>
+            <a
+              class="social-link"
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={item.label}
+              title={item.label}
+              data-label={item.label}
+              data-social={item.id}
+              data-index={String(index + 1).padStart(2, '0')}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d={item.icon.path} />
+              </svg>
+              <span class="visually-hidden">{item.label}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</div>

@@ -25,6 +25,9 @@ const { items } = Astro.props;
               {String(index + 1).padStart(2, '0')}
             </span>
             <span class="primary-link__label">{item.label}</span>
+            <span class="primary-link__arrow" aria-hidden="true">
+              ↗
+            </span>
           </a>
         ) : (
           <button
@@ -38,6 +41,9 @@ const { items } = Astro.props;
               {String(index + 1).padStart(2, '0')}
             </span>
             <span class="primary-link__label">{item.label}</span>
+            <span class="primary-link__soon" aria-hidden="true">
+              soon
+            </span>
           </button>
         )}
       </li>
