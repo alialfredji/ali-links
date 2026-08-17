@@ -45,7 +45,7 @@ const remainingBio = profile.bio.slice(1).map((line) => line.trim());
       </header>
 
       <nav class="primary-navigation" aria-label="Primary links">
-        <LinkList items={profile.links} />
+        <LinkList items={profile.links} newsletter={profile.newsletter} />
       </nav>
 
       <footer class="profile-footer">

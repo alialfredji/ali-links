@@ -20,6 +20,21 @@ export interface PrimaryLink {
   id: string;
   label: string;
   href?: string;
+  /** Renders an inline panel below the row instead of navigating away. */
+  expands?: 'newsletter';
+}
+
+export interface Newsletter {
+  /** Publication home. */
+  publicationUrl: string;
+  /**
+   * Substack's subscribe page. The panel submits here as a plain GET form so the
+   * email arrives prefilled. Substack's `/api/v1/free` endpoint cannot be used
+   * directly: it rejects form-encoded bodies and blocks the CORS preflight for
+   * JSON, so an in-page subscribe is not possible from another origin.
+   */
+  subscribeUrl: string;
+  pitch: string;
 }
 
 export interface Profile {
@@ -31,6 +46,7 @@ export interface Profile {
   // banner: ProfileImage;
   socials: readonly SocialLink[];
   links: readonly PrimaryLink[];
+  newsletter: Newsletter;
 }
 
 const email = 'alfredjiali@gmail.com';
@@ -103,7 +119,7 @@ export const profile: Profile = {
     {
       id: 'newsletter',
       label: 'Subscribe to my newsletter',
-      href: 'https://alialf.substack.com/subscribe',
+      expands: 'newsletter',
     },
     {
       id: 'notes',
@@ -129,4 +145,10 @@ export const profile: Profile = {
       label: 'About me',
     },
   ],
+  newsletter: {
+    publicationUrl: 'https://alialf.substack.com',
+    subscribeUrl: 'https://alialf.substack.com/subscribe',
+    pitch:
+      'Practical field notes on building software, products, and workflows with AI. Future proof yourself to be relevant.',
+  },
 };

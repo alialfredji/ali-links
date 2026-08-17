@@ -1,52 +1,129 @@
 ---
-import type { PrimaryLink } from '../config/profile';
+import type { Newsletter, PrimaryLink } from '../config/profile';
+import NewsletterPanel from './NewsletterPanel.astro';
 
 interface Props {
   items: readonly PrimaryLink[];
+  newsletter: Newsletter;
 }
 
-const { items } = Astro.props;
+const { items, newsletter } = Astro.props;
+const indexOf = (index: number) => String(index + 1).padStart(2, '0');
 ---
 
 <ul class="link-list">
   {
-    items.map((item, index) => (
-      <li>
-        {item.href ? (
-          <a
-            class="primary-link"
-            href={item.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-link={item.id}
-            data-index={String(index + 1).padStart(2, '0')}
-          >
-            <span class="primary-link__index" aria-hidden="true">
-              {String(index + 1).padStart(2, '0')}
-            </span>
-            <span class="primary-link__label">{item.label}</span>
-            <span class="primary-link__arrow" aria-hidden="true">
-              ↗
-            </span>
-          </a>
-        ) : (
+    items.map((item, index) =>
+      item.expands === 'newsletter' ? (
+        <li class="link-list__item link-list__item--expandable">
           <button
             type="button"
             class="primary-link"
-            data-unavailable-action
+            data-newsletter-toggle
+            aria-expanded="false"
+            aria-controls={`${item.id}-panel`}
             data-link={item.id}
-            data-index={String(index + 1).padStart(2, '0')}
+            data-index={indexOf(index)}
           >
             <span class="primary-link__index" aria-hidden="true">
-              {String(index + 1).padStart(2, '0')}
+              {indexOf(index)}
             </span>
             <span class="primary-link__label">{item.label}</span>
-            <span class="primary-link__soon" aria-hidden="true">
-              soon
+            <span class="primary-link__toggle" aria-hidden="true">
+              <span class="primary-link__toggle-bar" />
+              <span class="primary-link__toggle-bar" />
             </span>
           </button>
-        )}
-      </li>
-    ))
+          <NewsletterPanel id={`${item.id}-panel`} newsletter={newsletter} />
+          <noscript>
+            <a
+              class="newsletter-noscript"
+              href={newsletter.subscribeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Subscribe on Substack ↗
+            </a>
+          </noscript>
+        </li>
+      ) : (
+        <li class="link-list__item">
+          {item.href ? (
+            <a
+              class="primary-link"
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-link={item.id}
+              data-index={indexOf(index)}
+            >
+              <span class="primary-link__index" aria-hidden="true">
+                {indexOf(index)}
+              </span>
+              <span class="primary-link__label">{item.label}</span>
+              <span class="primary-link__arrow" aria-hidden="true">
+                ↗
+              </span>
+            </a>
+          ) : (
+            <button
+              type="button"
+              class="primary-link"
+              data-unavailable-action
+              data-link={item.id}
+              data-index={indexOf(index)}
+            >
+              <span class="primary-link__index" aria-hidden="true">
+                {indexOf(index)}
+              </span>
+              <span class="primary-link__label">{item.label}</span>
+              <span class="primary-link__soon" aria-hidden="true">
+                soon
+              </span>
+            </button>
+          )}
+        </li>
+      ),
+    )
   }
 </ul>
+
+<script>
+  const toggles = document.querySelectorAll<HTMLButtonElement>(
+    '[data-newsletter-toggle]',
+  );
+
+  toggles.forEach((toggle) => {
+    const panelId = toggle.getAttribute('aria-controls');
+    const panel = panelId ? document.getElementById(panelId) : null;
+    if (!panel) return;
+
+    const input = panel.querySelector<HTMLInputElement>('input[type="email"]');
+
+    toggle.addEventListener('click', () => {
+      const open = panel.toggleAttribute('data-open');
+      toggle.setAttribute('aria-expanded', String(open));
+      if (open) {
+        window.setTimeout(() => input?.focus({ preventScroll: true }), 220);
+      }
+    });
+  });
+
+  // The form itself works without JavaScript; this only confirms the handoff.
+  document
+    .querySelectorAll<HTMLFormElement>('[data-newsletter-form]')
+    .forEach((form) => {
+      const panel = form.closest<HTMLElement>('[data-newsletter-panel]');
+      const status = panel?.querySelector<HTMLElement>(
+        '[data-newsletter-status]',
+      );
+
+      form.addEventListener('submit', () => {
+        if (!form.checkValidity()) return;
+        panel?.setAttribute('data-state', 'handed-off');
+        if (status) {
+          status.textContent = 'Finish up in the new Substack tab.';
+        }
+      });
+    });
+</script>

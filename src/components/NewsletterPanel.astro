@@ -1,0 +1,49 @@
+---
+import type { Newsletter } from '../config/profile';
+
+interface Props {
+  id: string;
+  newsletter: Newsletter;
+}
+
+const { id, newsletter } = Astro.props;
+---
+
+<div class="newsletter-panel" id={id} data-newsletter-panel hidden>
+  <div class="newsletter-panel__inner">
+    <p class="newsletter-panel__pitch">{newsletter.pitch}</p>
+
+    {/*
+      Plain GET form: submitting lands on Substack's own subscribe page with the
+      address already filled in. No JavaScript required, and no dependency on
+      Substack's private API.
+    */}
+    <form
+      class="newsletter-form"
+      method="get"
+      action={newsletter.subscribeUrl}
+      target="_blank"
+      data-newsletter-form
+    >
+      <label class="visually-hidden" for={`${id}-email`}>Email address</label>
+      <div class="newsletter-form__row">
+        <input
+          class="newsletter-form__input"
+          id={`${id}-email`}
+          type="email"
+          name="email"
+          inputmode="email"
+          autocomplete="email"
+          spellcheck="false"
+          required
+          placeholder="you@example.com"
+        />
+        <button class="newsletter-form__submit" type="submit">Subscribe</button>
+      </div>
+    </form>
+
+    <p class="newsletter-panel__status" role="status" data-newsletter-status>
+      Confirms in a new tab on Substack.
+    </p>
+  </div>
+</div>
