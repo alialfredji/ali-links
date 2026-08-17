@@ -1,0 +1,33 @@
+---
+import { siteConfig } from '../config/site';
+import { shouldLoadAnalytics } from '../lib/analytics';
+
+const measurementId = siteConfig.analytics.googleMeasurementId;
+
+const enabled = shouldLoadAnalytics({
+  isProduction: import.meta.env.PROD,
+  hostname: Astro.site?.hostname,
+  productionHostname: siteConfig.productionHostname,
+  measurementId,
+});
+
+const loaderSrc = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+
+// Kept as a string so the canonical gtag.js snippet reaches the browser
+// unchanged, the same way SeoHead emits JSON-LD.
+const bootstrap = [
+  'window.dataLayer = window.dataLayer || [];',
+  'function gtag(){dataLayer.push(arguments);}',
+  "gtag('js', new Date());",
+  `gtag('config', '${measurementId}');`,
+].join('\n');
+---
+
+{
+  enabled && (
+    <Fragment>
+      <script is:inline async src={loaderSrc} />
+      <script is:inline set:html={bootstrap} />
+    </Fragment>
+  )
+}

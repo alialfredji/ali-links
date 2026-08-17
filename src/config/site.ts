@@ -11,4 +11,9 @@ export const siteConfig = {
   socialImageAlt: profile.image.alt,
   languageTag: 'en',
   openGraphLocale: 'en_US',
+  productionHostname: 'ali.alfredji.com',
+  analytics: {
+    // Public GA4 measurement id; it ships in the page HTML by design.
+    googleMeasurementId: 'G-0H1WJFH61B',
+  },
 } as const;
