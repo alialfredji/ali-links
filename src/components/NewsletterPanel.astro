@@ -7,17 +7,16 @@ interface Props {
 }
 
 const { id, newsletter } = Astro.props;
+
+// The subscribe form is a plain GET form: submitting lands on Substack's own
+// subscribe page with the address already filled in. No JavaScript required,
+// and no dependency on Substack's private API.
 ---
 
 <div class="newsletter-panel" id={id} data-newsletter-panel hidden>
   <div class="newsletter-panel__inner">
     <p class="newsletter-panel__pitch">{newsletter.pitch}</p>
 
-    {/*
-      Plain GET form: submitting lands on Substack's own subscribe page with the
-      address already filled in. No JavaScript required, and no dependency on
-      Substack's private API.
-    */}
     <form
       class="newsletter-form"
       method="get"
