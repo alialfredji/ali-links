@@ -1,5 +1,11 @@
 import type { ImageMetadata } from 'astro';
-import { siGithub, siSubstack, siX, siYoutube } from 'simple-icons';
+import {
+  siGithub,
+  siInstagram,
+  siSubstack,
+  siThreads,
+  siYoutube,
+} from 'simple-icons';
 
 // import modernBuilderBanner from '../assets/modern-builder-banner-short.png';
 import profilePic from '../assets/profile-pic-square.webp';
@@ -97,22 +103,22 @@ export const profile: Profile = {
       icon: siYoutube,
     },
     {
-      id: 'x',
-      label: 'X',
-      href: 'https://x.com/@aalfredji',
-      icon: siX,
+      id: 'threads',
+      label: 'Threads',
+      href: 'https://www.threads.com/@alialfredji',
+      icon: siThreads,
+    },
+    {
+      id: 'instagram',
+      label: 'Instagram',
+      href: 'https://www.instagram.com/alialfredji/',
+      icon: siInstagram,
     },
     // {
     //   id: 'tiktok',
     //   label: 'TikTok',
     //   href: 'https://tiktok.com/@aalfredji',
     //   icon: siTiktok,
-    // },
-    // {
-    //   id: 'instagram',
-    //   label: 'Instagram',
-    //   href: 'https://instagram.com/alialfredji',
-    //   icon: siInstagram,
     // },
   ],
   links: [
