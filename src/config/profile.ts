@@ -62,7 +62,7 @@ const linkedinIcon = {
 
 export const profile: Profile = {
   name: 'Ali Alfredji',
-  headline: 'Software Engineer & Product Builder',
+  headline: 'Software Engineer & Founder',
   email: email,
   bio: [
     'Tech guy and entrepreneur. Dad. 33 years. 10+ years building scalable software products and systems across startups and enterprises. Sharing field notes on how to build & operate better with AI, and I helping businesses apply the same practices to products, workflows, and internal systems.',
@@ -91,12 +91,6 @@ export const profile: Profile = {
       icon: linkedinIcon,
     },
     {
-      id: 'github',
-      label: 'GitHub',
-      href: 'https://github.com/alialfredji',
-      icon: siGithub,
-    },
-    {
       id: 'youtube',
       label: 'YouTube',
       href: 'https://youtube.com/@alialfredji',
@@ -113,6 +107,12 @@ export const profile: Profile = {
       label: 'Instagram',
       href: 'https://www.instagram.com/alialfredji/',
       icon: siInstagram,
+    },
+    {
+      id: 'github',
+      label: 'GitHub',
+      href: 'https://github.com/alialfredji',
+      icon: siGithub,
     },
     // {
     //   id: 'tiktok',
