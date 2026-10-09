@@ -27,6 +27,15 @@ Use Astro's `Picture` component directly when mobile and desktop require differe
 
 Never use CSS background images for meaningful content. They lack alternative text, responsive source selection, and clear loading priority.
 
+## Profile favicon
+
+The favicon uses a face-focused crop of `src/assets/profile-pic-square.png`,
+the original 1254×1254 portrait. Run `node scripts/generate-favicons.mjs` to
+regenerate the lossless PNGs and the ICO with 16, 32, and 48 pixel frames.
+The 32 pixel PNG serves browser tabs, the 96 pixel PNG serves search surfaces,
+the 512 pixel PNG serves larger displays, and the 180 pixel PNG serves Apple
+home-screen shortcuts. Keep these public URLs stable for crawler caching.
+
 ## Social images
 
 Provide a 1200×630 raster image and set `socialImage` in `src/config/site.ts`. The image must remain legible when cropped and should not rely on text smaller than typical mobile preview sizes.

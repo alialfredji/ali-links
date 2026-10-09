@@ -25,8 +25,32 @@ const { title, description, canonicalPath, noindex = false } = Astro.props;
     <meta name="theme-color" content="#090a0c" />
     <link
       rel="icon"
-      type="image/svg+xml"
-      href={withBase('/favicon.svg', import.meta.env.BASE_URL)}
+      type="image/x-icon"
+      sizes="16x16 32x32 48x48"
+      href={withBase('/favicon.ico', import.meta.env.BASE_URL)}
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href={withBase('/favicon-32.png', import.meta.env.BASE_URL)}
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="96x96"
+      href={withBase('/favicon-96.png', import.meta.env.BASE_URL)}
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="512x512"
+      href={withBase('/favicon-512.png', import.meta.env.BASE_URL)}
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href={withBase('/apple-touch-icon.png', import.meta.env.BASE_URL)}
     />
     <link
       rel="sitemap"
