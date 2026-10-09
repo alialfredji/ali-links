@@ -47,7 +47,7 @@ export interface Profile {
   name: string;
   headline: string;
   email: string;
-  bio: readonly string[];
+  bio?: readonly string[];
   image: ProfileImage;
   // banner: ProfileImage;
   socials: readonly SocialLink[];
@@ -62,13 +62,11 @@ const linkedinIcon = {
 
 export const profile: Profile = {
   name: 'Ali Alfredji',
-  headline: 'Software Engineer & Founder',
+  headline: `Tech Entrepreneur & Software Engineer`,
   email: email,
-  bio: [
-    'Tech guy and entrepreneur. Dad. 33 years. 10+ years building scalable software products and systems across startups and enterprises. Sharing field notes on how to build & operate better with AI, and I helping businesses apply the same practices to products, workflows, and internal systems.',
-    ' Currently Software Engineer at Inter IKEA Group. Also operating "Modern Builder" newsletter and community.',
-    ' Feel free to check my work or reach out for a chat!',
-  ],
+  // bio: [
+  //   '10+ years building scalable products and systems across startups and enterprises. I help businesses operate better with AI, and apply the same practices to products, workflows, and internal systems.',
+  // ],
   image: {
     src: profilePic,
     alt: 'Ali Alfredji portrait photo',
@@ -124,7 +122,7 @@ export const profile: Profile = {
   links: [
     {
       id: 'newsletter',
-      label: 'Subscribe to my newsletter',
+      label: 'Join my community',
       expands: 'newsletter',
     },
     {
@@ -137,11 +135,11 @@ export const profile: Profile = {
       label: 'Email me',
       href: `mailto:${email}`,
     },
-    {
-      id: 'book-call',
-      label: 'Book a 15-min call',
-      href: 'https://cal.com/alialfredji/15min',
-    },
+    // {
+    //   id: 'book-call',
+    //   label: 'Book a 15-min call',
+    //   href: 'https://cal.com/alialfredji/15min',
+    // },
     {
       id: 'portfolio',
       label: 'Portfolio',

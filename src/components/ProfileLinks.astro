@@ -6,11 +6,6 @@ import SocialLinks from './SocialLinks.astro';
 import StyleControls from './StyleControls.astro';
 
 const currentYear = new Date().getFullYear();
-const emphasis = 'build & operate better with AI';
-const [introBefore = '', introAfter = ''] = (profile.bio[0] ?? '')
-  .trim()
-  .split(emphasis);
-const remainingBio = profile.bio.slice(1).map((line) => line.trim());
 ---
 
 <div class="profile-shell">
@@ -36,10 +31,11 @@ const remainingBio = profile.bio.slice(1).map((line) => line.trim());
           </div>
         </div>
 
-        <p class="profile-bio">
-          {introBefore}<strong>{emphasis}</strong>{introAfter}{' '}
-          {remainingBio.join(' ')}
-        </p>
+        {profile.bio ? (
+          <p class="profile-bio">
+            {profile.bio.join(' ')}
+          </p>
+        ) : null}
 
         <SocialLinks items={profile.socials} />
       </header>
@@ -50,7 +46,7 @@ const remainingBio = profile.bio.slice(1).map((line) => line.trim());
 
       <footer class="profile-footer">
         <span
-          >© {currentYear} {profile.name} · Build & Operate better with AI</span
+          >© {currentYear} {profile.name} · Tech Entrepreneur</span
         >
       </footer>
 

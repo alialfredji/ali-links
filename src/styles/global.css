@@ -255,6 +255,7 @@
     font-size: 1.0625rem;
     font-weight: 500;
     line-height: 1.625rem;
+    white-space: pre-line;
   }
   .profile-bio {
     max-inline-size: 38.75rem;
@@ -273,7 +274,7 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin: 1.75rem 0 0 8.25rem;
+    margin: 0rem 0 0 7.75rem;
   }
   .social-links__label {
     color: var(--color-text-subtle);
@@ -286,13 +287,15 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 0.25rem;
+    gap: 0.1rem;
   }
   .social-link {
     position: relative;
     display: grid;
-    inline-size: 2.25rem;
-    block-size: 2.25rem;
+    min-inline-size: 3.5rem;
+    min-block-size: 4rem;
+    padding: 0.5rem;
+    gap: 0.375rem;
     place-items: center;
     border-radius: 0.5625rem;
     color: var(--color-text-subtle);
@@ -307,9 +310,14 @@
     transform: translateY(-1px);
   }
   .social-link svg {
-    inline-size: 1rem;
-    block-size: 1rem;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
     fill: currentColor;
+  }
+  .social-link__name {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    white-space: nowrap;
   }
   .social-link::after {
     content: attr(data-label);
@@ -650,13 +658,6 @@
   .social-links-wrap {
     gap: 0.75rem;
     margin: 1.375rem 0 0;
-  }
-  .social-links ul {
-    gap: 0.125rem;
-  }
-  .social-link {
-    inline-size: 2.375rem;
-    block-size: 2.375rem;
   }
   .social-link::after {
     display: none;

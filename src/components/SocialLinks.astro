@@ -10,7 +10,6 @@ const { items, label = 'Social profiles' } = Astro.props;
 ---
 
 <div class="social-links-wrap">
-  <span class="social-links__label" aria-hidden="true">elsewhere</span>
   <nav class="social-links" aria-label={label}>
     <ul>
       {
@@ -30,7 +29,7 @@ const { items, label = 'Social profiles' } = Astro.props;
               <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                 <path d={item.icon.path} />
               </svg>
-              <span class="visually-hidden">{item.label}</span>
+              {/* <span class="social-link__name">{item.label}</span> */}
             </a>
           </li>
         ))

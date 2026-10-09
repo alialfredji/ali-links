@@ -3,9 +3,9 @@ import { profile } from './profile';
 export const siteConfig = {
   name: profile.name,
   shortName: profile.name,
-  title: 'Ali Alfredji - Software Engineer & Product Builder',
+  title: 'Ali Alfredji - Tech Entrepreneur & Software Engineer',
   description:
-    'Ali Alfredji is a software engineer, product builder & creator helping people and businesses build & operate better with AI.',
+    'Ali Alfredji is a tech entrepreneur, software engineer, and product builder helping people and businesses build & operate better with AI.',
   email: profile.email,
   socialImage: profile.image.src.src,
   socialImageAlt: profile.image.alt,
