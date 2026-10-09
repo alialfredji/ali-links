@@ -31,11 +31,11 @@ const currentYear = new Date().getFullYear();
           </div>
         </div>
 
-        {profile.bio ? (
-          <p class="profile-bio">
-            {profile.bio.join(' ')}
-          </p>
-        ) : null}
+        {
+          profile.bio ? (
+            <p class="profile-bio">{profile.bio.join(' ')}</p>
+          ) : null
+        }
 
         <SocialLinks items={profile.socials} />
       </header>
@@ -45,9 +45,7 @@ const currentYear = new Date().getFullYear();
       </nav>
 
       <footer class="profile-footer">
-        <span
-          >© {currentYear} {profile.name} · Tech Entrepreneur</span
-        >
+        <span>© {currentYear} {profile.name} · Tech Entrepreneur</span>
       </footer>
 
       <dialog class="unavailable-dialog" data-unavailable-dialog>
